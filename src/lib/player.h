@@ -8,7 +8,6 @@ public:
     void draw();
     void handleMouseMotion(int x, int y);
 
-private:
     float x, y;
 };
 
