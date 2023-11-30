@@ -1,15 +1,20 @@
 #ifndef PLAYER_H
 #define PLAYER_H
+#include <GL/glut.h>
+#include <iostream>
 
 class Player {
 public:
     Player(float initialX, float initialY);
+
     void update();
-    void draw();
-    void handleMouseMotion(int x, int y);
+    void draw() const;  
+    void handleMouseMotion(int newX, int newY);
 
 private:
-    float x, y;
+    float x;
+    float y;
+    GLuint textureID;
 };
 
-#endif // PLAYER_H
+#endif 

@@ -6,7 +6,7 @@ Player player(0.0f, -0.5f); // Instantiate a player object at the initial positi
 Mobs mobs; // Instantiate a Mobs object
 
 void init() {
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearColor(1.0, 1.0, 0.0, 0.0); // Set the background color to yellow
 }
 
 void update(int value) {
@@ -22,7 +22,7 @@ void display() {
     // Draw background
     glLoadIdentity();
     glBegin(GL_QUADS);
-    glColor3f(0.0, 0.0, 0.0); // Set the background color to black
+    glColor3f(0.8, 0.5, 0.2); // Set the background color to light brown
     glVertex2f(-1.0, 1.0);    // Top-left
     glVertex2f(1.0, 1.0);     // Top-right
     glVertex2f(1.0, -1.0);    // Bottom-right
@@ -57,6 +57,7 @@ int main(int argc, char** argv) {
     glutDisplayFunc(display);
     glutPassiveMotionFunc(handleMouseMotion);
     glutTimerFunc(25, timer, 0);
+    init(); // Call the init function to set the background color
     glutMainLoop();
     return 0;
 }
