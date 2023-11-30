@@ -9,6 +9,7 @@ public:
     void handleMouseMotion(int x, int y);
 
     float x, y;
+    int reload; // in units of frame
 };
 
 #endif // PLAYER_H

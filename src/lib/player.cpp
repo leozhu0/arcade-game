@@ -4,7 +4,7 @@
 Player::Player(float initialX, float initialY) : x(initialX), y(initialY) {}
 
 void Player::update() {
-    // Update player logic here
+    if (reload != 0) --reload;
 }
 
 void Player::draw() {
