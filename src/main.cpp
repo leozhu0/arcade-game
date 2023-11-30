@@ -36,16 +36,23 @@ void update(int value) {
 //bullets.push_back(Bullet(0.1f,0.1f,1.7f));
 
     if (isSpacePressed && player.reload == 0) {
-        bullets.push_back(Bullet(player.x,player.y,1.5707964));
+        bullets.push_back(Bullet(player.x,player.y,.01,1.5707964));
         player.reload = 10;
     }
 
     player.update(); // Update the player object
     mobs.update();   // Update the mobs object
 
-    for (size_t i = 0; i < bullets.size();  i++) {
-    	bullets[i].update();
+    // for (size_t i = 0; i < bullets.size();  i++) {
+    // 	bullets[i].update();
+    // }
+    for (Bullet bullet : bullets) {
+        bullet.update();
+        if (!(bullet.needsRemoval)) bulletBuffer.push_back(bullet);
     }
+
+    bullets = bulletBuffer
+    bulletBuffer.clear();
     
     glutPostRedisplay(); // Request a redraw
     glutTimerFunc(16, update, 0); // Schedule the next update after 16 milliseconds

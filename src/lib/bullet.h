@@ -7,8 +7,10 @@ public:
     void draw();
     void handleMouseMotion(int x, int y);
     Bullet(float i_x, float i_y, float dir);
+    bool needsRemoval = false;
 private:
     float x, y;
+    float radius;
     float direction;
 };
 
