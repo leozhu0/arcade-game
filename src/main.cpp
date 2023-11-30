@@ -1,17 +1,48 @@
 #include "lib/player.h"
 #include "lib/mobs.h"
+#include "lib/bullet.h"
 #include <GL/glut.h>
+#include <vector>
 
 Player player(0.0f, -0.5f); // Instantiate a player object at the initial position
 Mobs mobs; // Instantiate a Mobs object
+std::vector<Bullet> bullets;
 
+//bullets.push_back(Bullet(0.1f,0.1f,1.7f));
+bool isSpacePressed = false;
+void handleKeypress(unsigned char key, int x, int y) {
+    if (key == ' ') {
+        isSpacePressed = true;
+    }
+}
+
+void handleKeyRelease(unsigned char key, int x, int y) {
+    if (key == ' ') {
+        isSpacePressed = false;
+    }
+}
 void init() {
-    glClearColor(1.0, 1.0, 0.0, 0.0); // Set the background color to yellow
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+   // glutKeyboardFunc(handleKeypress);
+   // glutKeyboardUpFunc(handleKeyRelease);
+    //glutTimerFunc(0, update, 0);
 }
 
 void update(int value) {
+    glutKeyboardFunc(handleKeypress);
+    glutKeyboardUpFunc(handleKeyRelease);
+
+//bullets.push_back(Bullet(0.1f,0.1f,1.7f));
+
+    if(isSpacePressed){
+	bullets.push_back(Bullet(player.x,player.y,1.7));
+    }
     player.update(); // Update the player object
     mobs.update();   // Update the mobs object
+    for(size_t i = 0; i < bullets.size();  i++){
+    	bullets[i].update();
+    }
+    
     glutPostRedisplay(); // Request a redraw
     glutTimerFunc(16, update, 0); // Schedule the next update after 16 milliseconds
 }
@@ -31,6 +62,10 @@ void display() {
 
     // Draw the player
     player.draw();
+
+    for(size_t i = 0; i < bullets.size();  i++){
+        bullets[i].draw();
+    }
 
     // Draw the mobs
     mobs.draw();
