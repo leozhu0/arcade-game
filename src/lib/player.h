@@ -1,4 +1,3 @@
-#define GL_SILENCE_DEPRECATION
 #ifndef PLAYER_H
 #define PLAYER_H
 #include <GL/glut.h>

@@ -1,4 +1,3 @@
-#define GL_SILENCE_DEPRECATION
 #include "lib/player.h"
 #include "lib/mobs.h"
 #include "lib/bullet.h"

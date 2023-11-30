@@ -1,4 +1,3 @@
-#define GL_SILENCE_DEPRECATION
 #ifndef BULLET_H
 #define BULLET_H
 

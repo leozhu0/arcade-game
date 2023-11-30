@@ -1,4 +1,3 @@
-#define GL_SILENCE_DEPRECATION
 #include "bullet.h"
 #include <GL/glut.h>
 #include <cmath>
