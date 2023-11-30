@@ -1,3 +1,4 @@
+#define GL_SILENCE_DEPRECATION
 #include "lib/player.h"
 #include "lib/mobs.h"
 #include "lib/bullet.h"
@@ -5,7 +6,18 @@
 #include <vector>
 
 Player player(0.0f, -0.5f); // Instantiate a player object at the initial position
-Mobs mobs; // Instantiate a Mobs object
+
+std::vector<Mob> mobs;
+Mob mob1(.1,.1); // Instantiate a Mobs object
+Mob mob2(-.1,.1);
+Mob mob3(.1,-.1);
+
+mobs.push_back(mob1);
+mobs.push_back(mob2);
+mobs.push_back(mob3);
+
+// = {Mob(.1,.1), Mob(-.1,.1), Mob(.1,-.1)};
+
 std::vector<Bullet> bullets;
 std::vector<Bullet> bulletBuffer;
 
@@ -41,7 +53,10 @@ void update(int value) {
     }
 
     player.update(); // Update the player object
-    mobs.update();   // Update the mobs object
+
+    for (Mob mob : mobs) {
+        mob.update();   // Update the mobs object
+    }
 
     // for (size_t i = 0; i < bullets.size();  i++) {
     // 	bullets[i].update();
@@ -51,7 +66,7 @@ void update(int value) {
         if (!(bullet.needsRemoval)) bulletBuffer.push_back(bullet);
     }
 
-    bullets = bulletBuffer
+    bullets = bulletBuffer;
     bulletBuffer.clear();
     
     glutPostRedisplay(); // Request a redraw
@@ -74,12 +89,15 @@ void display() {
     // Draw the player
     player.draw();
 
-    for(size_t i = 0; i < bullets.size();  i++){
-        bullets[i].draw();
+    // Draw the bullets
+    for(Bullet bullet : bullets){
+        bullet.draw();
     }
 
     // Draw the mobs
-    mobs.draw();
+    for (Mob mob : mobs) {
+        mob.draw();
+    }
 
     glutSwapBuffers(); // Use double buffering
 }
@@ -96,6 +114,14 @@ void handleMouseMotion(int newX, int newY) {
 }
 
 int main(int argc, char** argv) {
+    // Mob mob1(.1,.1); // Instantiate a Mobs object
+    // Mob mob2(-.1,.1);
+    // Mob mob3(.1,-.1);
+
+    // mobs.push_back(mob1);
+    // mobs.push_back(mob2);
+    // mobs.push_back(mob3);
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutCreateWindow("Bullet Hell");
