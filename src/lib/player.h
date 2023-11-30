@@ -11,10 +11,7 @@ public:
     void draw() const;  
     void handleMouseMotion(int newX, int newY);
 
-private:
-    float x;
-    float y;
-    GLuint textureID;
+    float x, y;
 };
 
-#endif 
+#endif // PLAYER_H
