@@ -10,8 +10,8 @@ public:
     void update();
     void draw() const;  
     void handleMouseMotion(int newX, int newY);
-
+    GLuint textureID;
     float x, y;
 };
 
-#endif // PLAYER_H
+#endif
