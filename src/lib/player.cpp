@@ -1,4 +1,4 @@
-#define STB_IMAGE_IMPLEMENTATION
+#define GL_SILENCE_DEPRECATION
 #include "player.h"
 #include "stb_image.h"
 #include <GL/glut.h>
