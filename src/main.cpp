@@ -7,6 +7,7 @@
 Player player(0.0f, -0.5f); // Instantiate a player object at the initial position
 Mobs mobs; // Instantiate a Mobs object
 std::vector<Bullet> bullets;
+std::vector<Bullet> bulletBuffer;
 
 //bullets.push_back(Bullet(0.1f,0.1f,1.7f));
 bool isSpacePressed = false;
@@ -34,14 +35,24 @@ void update(int value) {
 
 //bullets.push_back(Bullet(0.1f,0.1f,1.7f));
 
-    if(isSpacePressed){
-	bullets.push_back(Bullet(player.x,player.y,1.7));
+    if (isSpacePressed && player.reload == 0) {
+        bullets.push_back(Bullet(player.x,player.y,.01,1.5707964));
+        player.reload = 10;
     }
+
     player.update(); // Update the player object
     mobs.update();   // Update the mobs object
-    for(size_t i = 0; i < bullets.size();  i++){
-    	bullets[i].update();
+
+    // for (size_t i = 0; i < bullets.size();  i++) {
+    // 	bullets[i].update();
+    // }
+    for (Bullet bullet : bullets) {
+        bullet.update();
+        if (!(bullet.needsRemoval)) bulletBuffer.push_back(bullet);
     }
+
+    bullets = bulletBuffer
+    bulletBuffer.clear();
     
     glutPostRedisplay(); // Request a redraw
     glutTimerFunc(16, update, 0); // Schedule the next update after 16 milliseconds
@@ -88,7 +99,7 @@ int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutCreateWindow("Bullet Hell");
-    glutFullScreen(); // Uncomment this line if you want the window to be fullscreen
+    //glutFullScreen(); // Uncomment this line if you want the window to be fullscreen
     glutDisplayFunc(display);
     glutPassiveMotionFunc(handleMouseMotion);
     glutTimerFunc(25, timer, 0);

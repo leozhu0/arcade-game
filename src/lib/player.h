@@ -12,6 +12,7 @@ public:
     void handleMouseMotion(int newX, int newY);
     GLuint textureID;
     float x, y;
+    int reload; // in units of frame
 };
 
 #endif
