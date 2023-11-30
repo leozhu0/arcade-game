@@ -12,9 +12,9 @@ Mob mob1(.1,.1); // Instantiate a Mobs object
 Mob mob2(-.1,.1);
 Mob mob3(.1,-.1);
 
-mobs.push_back(mob1);
-mobs.push_back(mob2);
-mobs.push_back(mob3);
+// mobs.push_back(mob1);
+// mobs.push_back(mob2);
+// mobs.push_back(mob3);
 
 // = {Mob(.1,.1), Mob(-.1,.1), Mob(.1,-.1)};
 
@@ -118,9 +118,9 @@ int main(int argc, char** argv) {
     // Mob mob2(-.1,.1);
     // Mob mob3(.1,-.1);
 
-    // mobs.push_back(mob1);
-    // mobs.push_back(mob2);
-    // mobs.push_back(mob3);
+    mobs.push_back(mob1);
+    mobs.push_back(mob2);
+    mobs.push_back(mob3);
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
