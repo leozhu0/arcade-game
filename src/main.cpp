@@ -7,17 +7,12 @@
 
 Player player(0.0f, -0.5f); // Instantiate a player object at the initial position
 
-std::vector<Mob> mobs;
-Mob mob1(.1,.1); // Instantiate a Mobs object
-Mob mob2(-.1,.1);
-Mob mob3(.1,-.1);
+std::vector<Mob> mobs; // Instantiate Mobs
+Mob mob1(.1,.1,1,-1);
+Mob mob2(-.1,.1,1,1);
+Mob mob3(.1,-.1,-1,-1);
 
-// mobs.push_back(mob1);
-// mobs.push_back(mob2);
-// mobs.push_back(mob3);
-
-// = {Mob(.1,.1), Mob(-.1,.1), Mob(.1,-.1)};
-
+// Predeclares vector of bullets to be used later
 std::vector<Bullet> bullets;
 std::vector<Bullet> bulletBuffer;
 
@@ -41,11 +36,10 @@ void init() {
     //glutTimerFunc(0, update, 0);
 }
 
+// Updates the position and values of objects then redraws
 void update(int value) {
     glutKeyboardFunc(handleKeypress);
     glutKeyboardUpFunc(handleKeyRelease);
-
-//bullets.push_back(Bullet(0.1f,0.1f,1.7f));
 
     if (isSpacePressed && player.reload == 0) {
         bullets.push_back(Bullet(player.x,player.y,.01,1.5707964));
@@ -55,17 +49,15 @@ void update(int value) {
     player.update(); // Update the player object
 
     for (Mob mob : mobs) {
-        mob.update();   // Update the mobs object
+        mob.update(); // Update the mob objects
     }
 
-    // for (size_t i = 0; i < bullets.size();  i++) {
-    // 	bullets[i].update();
-    // }
     for (Bullet bullet : bullets) {
         bullet.update();
-        if (!(bullet.needsRemoval)) bulletBuffer.push_back(bullet);
+        if (!(bullet.needsRemoval)) bulletBuffer.push_back(bullet); // Only keeps around the bullets that are in bounds
     }
 
+    // Sets bullet vectors to what they need to be for the next update
     bullets = bulletBuffer;
     bulletBuffer.clear();
     
@@ -147,9 +139,6 @@ void handleMouseMotion(int newX, int newY) {
 }
 
 int main(int argc, char** argv) {
-    // Mob mob1(.1,.1); // Instantiate a Mobs object
-    // Mob mob2(-.1,.1);
-    // Mob mob3(.1,-.1);
 
     mobs.push_back(mob1);
     mobs.push_back(mob2);

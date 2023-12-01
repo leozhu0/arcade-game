@@ -3,15 +3,15 @@
 #include <GL/glut.h>
 #include <iostream>
 
-Mob::Mob(float i_x, float i_y) {
+Mob::Mob(float i_x, float i_y, float x_dir, float y_dir) {
     // Initialize mob positions
     x = i_x;
     y = i_y;
 
     speed = 0.002; 
 
-    x_direction = 1;
-    y_direction = 1;
+    x_direction = x_dir;
+    y_direction = y_dir;
 }
 
 void Mob::handleBoundaryBounce(float &position, int &direction, float speed) {
