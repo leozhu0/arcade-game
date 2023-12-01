@@ -90,7 +90,8 @@ void loadBackgroundTexture(const char* filename) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         stbi_image_free(image); // Free the image data after loading
-    } else {
+    } 
+    else {
         // Handle error loading image
         std::cerr << "Error loading background image." << std::endl;
     }
@@ -116,13 +117,6 @@ void display() {
     // Draw background
     glLoadIdentity();
     drawBackground();
-    // glBegin(GL_QUADS);
-    // glColor3f(0.8, 0.5, 0.2); // Set the background color to light brown
-    // glVertex2f(-1.0, 1.0);    // Top-left
-    // glVertex2f(1.0, 1.0);     // Top-right
-    // glVertex2f(1.0, -1.0);    // Bottom-right
-    // glVertex2f(-1.0, -1.0);   // Bottom-left
-    // glEnd();
 
     // Draw the player
     player.draw();
@@ -133,8 +127,9 @@ void display() {
 
     // Draw the mobs
     for (Mob& mob : mobs) {
-    mob.draw();
-}
+        mob.update();   // Update the mobs object
+        mob.draw();
+    }
 
     glutSwapBuffers(); // Use double buffering
 }
