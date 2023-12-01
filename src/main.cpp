@@ -166,7 +166,7 @@ int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutCreateWindow("Bullet Hell");
-    //glutFullScreen(); // Uncomment this line if you want the window to be fullscreen
+    glutFullScreen(); // Uncomment this line if you want the window to be fullscreen
     glutDisplayFunc(display);
     glutPassiveMotionFunc(handleMouseMotion);
     glutTimerFunc(25, timer, 0);
