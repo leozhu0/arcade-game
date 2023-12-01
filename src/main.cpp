@@ -2,6 +2,7 @@
 #include "lib/mobs.h"
 #include "lib/bullet.h"
 #include <GL/glut.h>
+#include "lib/stb_image.h"
 #include <vector>
 
 Player player(0.0f, -0.5f); // Instantiate a player object at the initial position
@@ -71,35 +72,73 @@ void update(int value) {
     glutPostRedisplay(); // Request a redraw
     glutTimerFunc(16, update, 0); // Schedule the next update after 16 milliseconds
 }
+GLuint backgroundTexture;
+
+void loadBackgroundTexture(const char* filename) {
+    int width, height, channels;
+    unsigned char* image = stbi_load(filename, &width, &height, &channels, 3); // 3 channels for RGB
+
+    if (image) {
+        glGenTextures(1, &backgroundTexture);
+        glBindTexture(GL_TEXTURE_2D, backgroundTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+
+        // Set texture parameters (you might need to adjust these based on your needs)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_image_free(image); // Free the image data after loading
+    } else {
+        // Handle error loading image
+        std::cerr << "Error loading background image." << std::endl;
+    }
+}
+
+void drawBackground() {
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, backgroundTexture);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0, 0.0); glVertex2f(-1.0, 1.0);
+    glTexCoord2f(1.0, 0.0); glVertex2f(1.0, 1.0);
+    glTexCoord2f(1.0, 1.0); glVertex2f(1.0, -1.0);
+    glTexCoord2f(0.0, 1.0); glVertex2f(-1.0, -1.0);
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
+}
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     // Draw background
     glLoadIdentity();
-    glBegin(GL_QUADS);
-    glColor3f(0.8, 0.5, 0.2); // Set the background color to light brown
-    glVertex2f(-1.0, 1.0);    // Top-left
-    glVertex2f(1.0, 1.0);     // Top-right
-    glVertex2f(1.0, -1.0);    // Bottom-right
-    glVertex2f(-1.0, -1.0);   // Bottom-left
-    glEnd();
+    drawBackground();
+    // glBegin(GL_QUADS);
+    // glColor3f(0.8, 0.5, 0.2); // Set the background color to light brown
+    // glVertex2f(-1.0, 1.0);    // Top-left
+    // glVertex2f(1.0, 1.0);     // Top-right
+    // glVertex2f(1.0, -1.0);    // Bottom-right
+    // glVertex2f(-1.0, -1.0);   // Bottom-left
+    // glEnd();
 
     // Draw the player
     player.draw();
 
-    // Draw the bullets
-    for(Bullet bullet : bullets){
-        bullet.draw();
+    for(size_t i = 0; i < bullets.size();  i++){
+        bullets[i].draw();
     }
 
     // Draw the mobs
-    for (Mob mob : mobs) {
-        mob.draw();
-    }
+    for (Mob& mob : mobs) {
+    mob.draw();
+}
 
     glutSwapBuffers(); // Use double buffering
 }
+
 
 void timer(int value) {
     update(value);
@@ -129,6 +168,10 @@ int main(int argc, char** argv) {
     glutPassiveMotionFunc(handleMouseMotion);
     glutTimerFunc(25, timer, 0);
     init(); // Call the init function to set the background color
+
+    loadBackgroundTexture("lib/images/space.jpeg");
+    drawBackground();
+    
     glutMainLoop();
     return 0;
 }

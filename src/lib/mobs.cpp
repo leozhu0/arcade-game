@@ -38,7 +38,7 @@ void Mob::draw() {
     // Draw mobs
 
     // Mob 1 (Red Triangle)
-    glColor3f(1.0, 0.0, 0.0); // Red color for mob1
+    //glColor3f(1.0, 0.0, 0.0); // Red color for mob1
     glBegin(GL_TRIANGLE_FAN);
     glVertex2f(x, y + 0.1);
     glVertex2f(x - 0.1, y - 0.1);
