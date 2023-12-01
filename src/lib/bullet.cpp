@@ -5,11 +5,10 @@
 Bullet::Bullet(float i_x, float i_y, float rad, float dir) : x(i_x), y(i_y), radius(rad), direction(dir) {}
 
 void Bullet::update() {
-    // Update player logic here
     x += 0.005 * cosf(direction); 
     y += 0.005 * sin(direction);
 
-    if (std::abs(x) > 1.0 || std::abs(y) > 1.0) needsRemoval = true;
+    if (std::abs(x) > 1.0 || std::abs(y) > 1.0) needsRemoval = true; // Checking if the object is in bounds
 }
 
 void Bullet::draw() {
@@ -19,6 +18,7 @@ void Bullet::draw() {
 
     int numSegments = 100;
 
+    // Circle calculations
     for (int i = 0; i < numSegments; i++) {
         float theta = 2.0f * 3.1415926f * float(i) / float(numSegments);
 

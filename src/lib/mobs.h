@@ -5,7 +5,7 @@
 
 class Mob {
 public:
-    Mob(float i_x, float i_y); // Constructor
+    Mob(float i_x, float i_y, float x_dir, float y_dir); // Constructor
 
     // Function to update the game world (including mobs)
     void update();
