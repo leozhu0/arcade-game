@@ -2,12 +2,14 @@
 #include <GL/glut.h>
 #include <cmath>
 
-Bullet::Bullet(float i_x, float i_y, float dir) : x(i_x), y(i_y), direction(dir) {}
+Bullet::Bullet(float i_x, float i_y, float rad, float dir) : x(i_x), y(i_y), radius(rad), direction(dir) {}
 
 void Bullet::update() {
     // Update player logic here
     x += 0.005 * cosf(direction); 
     y += 0.005 * sin(direction);
+
+    if (std::abs(x) > 1.0 || std::abs(y) > 1.0) needsRemoval = true;
 }
 
 void Bullet::draw() {
@@ -15,7 +17,6 @@ void Bullet::draw() {
     glBegin(GL_POLYGON);
     glColor3f(1.0, 1.0, 1.0);
 
-    float radius = 0.01;
     int numSegments = 100;
 
     for (int i = 0; i < numSegments; i++) {
