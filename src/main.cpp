@@ -1,3 +1,4 @@
+#define GL_SILENCE_DEPRECATION
 #include "lib/player.h"
 #include "lib/mobs.h"
 #include "lib/bullet.h"
@@ -6,8 +7,20 @@
 #include "lib/stb_image.h"
 
 Player player(0.0f, -0.5f); // Instantiate a player object at the initial position
-Mobs mobs; // Instantiate a Mobs object
+
+std::vector<Mob> mobs;
+Mob mob1(.1,.1); // Instantiate a Mobs object
+Mob mob2(-.1,.1);
+Mob mob3(.1,-.1);
+
+// mobs.push_back(mob1);
+// mobs.push_back(mob2);
+// mobs.push_back(mob3);
+
+// = {Mob(.1,.1), Mob(-.1,.1), Mob(.1,-.1)};
+
 std::vector<Bullet> bullets;
+std::vector<Bullet> bulletBuffer;
 
 //bullets.push_back(Bullet(0.1f,0.1f,1.7f));
 bool isSpacePressed = false;
@@ -35,14 +48,27 @@ void update(int value) {
 
 //bullets.push_back(Bullet(0.1f,0.1f,1.7f));
 
-    if(isSpacePressed){
-	bullets.push_back(Bullet(player.x,player.y,1.7));
+    if (isSpacePressed && player.reload == 0) {
+        bullets.push_back(Bullet(player.x,player.y,.01,1.5707964));
+        player.reload = 10;
     }
+
     player.update(); // Update the player object
-    mobs.update();   // Update the mobs object
-    for(size_t i = 0; i < bullets.size();  i++){
-    	bullets[i].update();
+
+    for (Mob mob : mobs) {
+        mob.update();   // Update the mobs object
     }
+
+    // for (size_t i = 0; i < bullets.size();  i++) {
+    // 	bullets[i].update();
+    // }
+    for (Bullet bullet : bullets) {
+        bullet.update();
+        if (!(bullet.needsRemoval)) bulletBuffer.push_back(bullet);
+    }
+
+    bullets = bulletBuffer;
+    bulletBuffer.clear();
     
     glutPostRedisplay(); // Request a redraw
     glutTimerFunc(16, update, 0); // Schedule the next update after 16 milliseconds
@@ -103,12 +129,15 @@ void display() {
     // Draw the player
     player.draw();
 
-    for(size_t i = 0; i < bullets.size();  i++){
-        bullets[i].draw();
+    // Draw the bullets
+    for(Bullet bullet : bullets){
+        bullet.draw();
     }
 
     // Draw the mobs
-    mobs.draw();
+    for (Mob mob : mobs) {
+        mob.draw();
+    }
 
     glutSwapBuffers(); // Use double buffering
 }
@@ -126,10 +155,18 @@ void handleMouseMotion(int newX, int newY) {
 
 
 int main(int argc, char** argv) {
+    // Mob mob1(.1,.1); // Instantiate a Mobs object
+    // Mob mob2(-.1,.1);
+    // Mob mob3(.1,-.1);
+
+    mobs.push_back(mob1);
+    mobs.push_back(mob2);
+    mobs.push_back(mob3);
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutCreateWindow("Bullet Hell");
-    glutFullScreen(); // Uncomment this line if you want the window to be fullscreen
+    //glutFullScreen(); // Uncomment this line if you want the window to be fullscreen
     glutDisplayFunc(display);
     glutPassiveMotionFunc(handleMouseMotion);
     glutTimerFunc(25, timer, 0);

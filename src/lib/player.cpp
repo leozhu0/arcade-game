@@ -1,4 +1,5 @@
 #define STB_IMAGE_IMPLEMENTATION
+#define GL_SILENCE_DEPRECATION
 #include "player.h"
 #include <GL/glut.h>
 #include "stb_image.h"
@@ -28,7 +29,7 @@ Player::Player(float initialX, float initialY) : x(initialX), y(initialY) {
 }
 
 void Player::update() {
-    // Update player logic here
+    if (reload != 0) --reload;
 }
 
 void Player::draw() const {
