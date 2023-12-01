@@ -1,3 +1,4 @@
+#define STB_IMAGE_IMPLEMENTATION
 #include "player.h"
 #include "stb_image.h"
 #include <GL/glut.h>
