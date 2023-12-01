@@ -9,7 +9,7 @@ Further along in the project, enemies will be able to be destroyed once they are
 
 ## How to Play
 
-Once the window loads, the player’s character can fire projectiles at the enemies by using the `spacebar`. The enemies will begin to move around the screen in an attempt to dodge the projectiles.
+Once the window loads, the player's position is controlled by the mouse. The player’s character can fire projectiles at the enemies by using the `spacebar`. The enemies will begin to move around the screen in an attempt to dodge the projectiles.
 
 
 ## How to Compile Using The Makefile
