@@ -114,14 +114,31 @@ void display() {
     player.draw();
 
     for(size_t i = 0; i < bullets.size();  i++){
+	
+	for(size_t j = 0; j < mobs.size(); j++){
+		if((bullets[i].x > mobs[j].x-0.1) && 
+		(bullets[i].x < mobs[j].x + 0.1) && 
+		(bullets[i].y > mobs[j].y-0.1) && 
+		(bullets[i].y < mobs[j].y + 0.1)){
+		   //Collison with enemy
+		   mobs[j].health -= 1;
+		   bullets.erase(bullets.begin() + i);
+		}
+	}
+	
         bullets[i].draw();
+	
     }
 
     // Draw the mobs
     for (Mob& mob : mobs) {
         mob.update();   // Update the mobs object
-        mob.draw();
+	if(mob.health > 0){
+           mob.draw();
+	}
     }
+
+
 
     glutSwapBuffers(); // Use double buffering
 }

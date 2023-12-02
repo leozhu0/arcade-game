@@ -7,8 +7,6 @@ public:
     void draw();
     Bullet(float i_x, float i_y, float rad, float dir);
     bool needsRemoval = false;
-
-private:
     float x, y;
     float radius;
     float direction;

@@ -12,11 +12,9 @@ public:
 
     // Function to draw the game world (including mobs)
     void draw();
-
-private:
     // Add necessary data members for mobs
     float x, y;
-    
+    int health = 100;
     float speed;
     int x_direction, y_direction;
 
