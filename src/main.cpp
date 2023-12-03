@@ -48,7 +48,7 @@ void drawStartMessage(const char *message, void *font, float fontSize) {
     int stringWidth = glutBitmapLength(font, (unsigned char *)message);
 
     // Calculate the starting position to center the text horizontally
-    float x = -0.5 + (static_cast<float>(glutGet(GLUT_WINDOW_WIDTH)) - stringWidth) / (2.0 * glutGet(GLUT_WINDOW_WIDTH));
+    float x = -0.70 + (static_cast<float>(glutGet(GLUT_WINDOW_WIDTH)) - stringWidth) / (2.0 * glutGet(GLUT_WINDOW_WIDTH));
 
     // Adjust the font size
     glPointSize(fontSize);
