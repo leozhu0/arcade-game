@@ -3,7 +3,7 @@
 #include "stb_image.h"
 #include <GL/glut.h>
 
-Player::Player(float initialX, float initialY) : x(initialX), y(initialY) {
+Player::Player(float initialX, float initialY) : x(initialX), y(initialY), reload(0), health(3) {
   // Load image using stb_image
   int width, height, channels;
 
@@ -20,7 +20,7 @@ Player::Player(float initialX, float initialY) : x(initialX), y(initialY) {
   glGenTextures(1, &textureID);
   glBindTexture(GL_TEXTURE_2D, textureID);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-  //glGenerateMipmap(GL_TEXTURE_2Dp
+  // glGenerateMipmap(GL_TEXTURE_2Dp
 
   // Set texture parameters (you can experiment with these)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -33,7 +33,8 @@ Player::Player(float initialX, float initialY) : x(initialX), y(initialY) {
 }
 
 void Player::update() {
-    if (reload != 0) --reload;
+  if (reload != 0)
+    --reload;
 }
 
 void Player::draw() const {

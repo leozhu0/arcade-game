@@ -42,28 +42,30 @@ void update(int value) {
     glutKeyboardUpFunc(handleKeyRelease);
 
     if (isSpacePressed && player.reload == 0) {
-        bullets.push_back(Bullet(player.x,player.y,.01,1.5707964));
+        bullets.push_back(Bullet(player.x, player.y, 0.01, 1.5707964));
         player.reload = 10;
     }
 
-    player.update(); // Update the player object
+    player.update();
 
-    for (Mob mob : mobs) {
-        mob.update(); // Update the mob objects
+    for (Mob& mob : mobs) {
+        mob.update(bullets); // Pass the bullets vector to the update function
     }
 
-    for (Bullet bullet : bullets) {
+    for (Bullet& bullet : bullets) {
         bullet.update();
-        if (!(bullet.needsRemoval)) bulletBuffer.push_back(bullet); // Only keeps around the bullets that are in bounds
+        if (!bullet.needsRemoval) {
+            bulletBuffer.push_back(bullet);
+        }
     }
 
-    // Sets bullet vectors to what they need to be for the next update
     bullets = bulletBuffer;
     bulletBuffer.clear();
-    
-    glutPostRedisplay(); // Request a redraw
-    glutTimerFunc(16, update, 0); // Schedule the next update after 16 milliseconds
+
+    glutPostRedisplay();
+    glutTimerFunc(16, update, 0);
 }
+
 GLuint backgroundTexture;
 
 void loadBackgroundTexture(const char* filename) {
@@ -103,6 +105,31 @@ void drawBackground() {
     glDisable(GL_TEXTURE_2D);
 }
 
+void handleBulletMobsCollision() {
+    auto bulletIt = bullets.begin();
+    while (bulletIt != bullets.end()) {
+        bool collision = false;
+
+        for (auto& mob : mobs) {
+            if ((bulletIt->x > mob.x - 0.1) &&
+                (bulletIt->x < mob.x + 0.1) &&
+                (bulletIt->y > mob.y - 0.1) &&
+                (bulletIt->y < mob.y + 0.1)) {
+                // Collision with enemy
+                mob.health -= 1;
+                collision = true;
+                break;
+            }
+        }
+
+        if (collision) {
+            bulletIt = bullets.erase(bulletIt);
+        } else {
+            bulletIt++;
+        }
+    }
+}
+
 void display() {
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -131,14 +158,24 @@ void display() {
     }
 
     // Draw the mobs
-    for (Mob& mob : mobs) {
-        mob.update();   // Update the mobs object
-	if(mob.health > 0){
-           mob.draw();
-	}
+for (Mob& mob : mobs) {
+    mob.update(bullets);   // Update the mobs object
+    if (mob.health > 0) {
+        mob.draw();
     }
+}
 
+// Erase bullets marked for removal
+auto it = bullets.begin();
+while (it != bullets.end()) {
+    if (it->needsRemoval) {
+        it = bullets.erase(it);
+    } else {
+        it++;
+    }
+}
 
+    handleBulletMobsCollision();
 
     glutSwapBuffers(); // Use double buffering
 }

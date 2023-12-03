@@ -5,10 +5,12 @@
 Bullet::Bullet(float i_x, float i_y, float rad, float dir) : x(i_x), y(i_y), radius(rad), direction(dir) {}
 
 void Bullet::update() {
-    x += 0.005 * cosf(direction); 
+    x += 0.005 * cosf(direction);
     y += 0.005 * sin(direction);
 
-    if (std::abs(x) > 1.0 || std::abs(y) > 1.0) needsRemoval = true; // Checking if the object is in bounds
+    if (std::abs(x) > 1.0 || std::abs(y) > 1.0) {
+        needsRemoval = true; // Set the flag to true when the bullet is out of bounds
+    }
 }
 
 void Bullet::draw() {

@@ -3,12 +3,12 @@
 
 #include "player.h"
 
+class Bullet;
+
 class Mob {
 public:
-    Mob(float i_x, float i_y, float x_dir, float y_dir); // Constructor
-
-    // Function to update the game world (including mobs)
-    void update();
+    Mob(float i_x, float i_y, float x_dir, float y_dir);
+    void update(std::vector<Bullet>& bullets);
 
     // Function to draw the game world (including mobs)
     void draw();
@@ -17,7 +17,8 @@ public:
     int health = 100;
     float speed;
     int x_direction, y_direction;
-
+    int shootCooldown;
+    bool isAlive() const;
     void handleBoundaryBounce(float &coord, int &direction, float speed);
 };
 
