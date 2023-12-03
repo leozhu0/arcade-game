@@ -8,7 +8,7 @@ Mob::Mob(float i_x, float i_y, float x_dir, float y_dir) {
     x = i_x;
     y = i_y;
 
-    speed = 0.000002; 
+    speed = 0.00002; 
 
     x_direction = x_dir;
     y_direction = y_dir;
@@ -41,7 +41,7 @@ void Mob::update(std::vector<Bullet>& bullets) {
 
     // Shooting logic
     if (isAlive() && shootCooldown == 0) {
-        bullets.push_back(Bullet(x, y, 0.01, 3.0 * M_PI / 2.0)); // Create a new bullet with a downward direction
+        bullets.push_back(Bullet(x, y, 0.01, 3.0 * M_PI / 2.0, false)); // Create a new bullet with a downward direction
         shootCooldown = 100; // Reset cooldown
     } else {
         shootCooldown--;
@@ -49,13 +49,12 @@ void Mob::update(std::vector<Bullet>& bullets) {
 }
 
 void Mob::draw() {
-    // Draw mobs
-
-    // Mob 1 (Red Triangle)
-    //glColor3f(1.0, 0.0, 0.0); // Red color for mob1
-    glBegin(GL_TRIANGLE_FAN);
-    glVertex2f(x, y + 0.1);
-    glVertex2f(x - 0.1, y - 0.1);
-    glVertex2f(x + 0.1, y - 0.1);
-    glEnd();
+    if (isAlive()) {
+        glColor3f(1.0, 0.0, 0.0); // Red color for mob1
+        glBegin(GL_TRIANGLE_FAN);
+        glVertex2f(x, y + 0.1);
+        glVertex2f(x - 0.1, y - 0.1);
+        glVertex2f(x + 0.1, y - 0.1);
+        glEnd();
+    }
 }

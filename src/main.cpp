@@ -91,7 +91,7 @@ void update(int value) {
   glutKeyboardUpFunc(handleKeyRelease);
 
   if (gameState == PLAYING && isSpacePressed && player.reload == 0) {
-    bullets.push_back(Bullet(player.x, player.y, 0.01, 1.5707964));
+    bullets.push_back(Bullet(player.x, player.y, 0.01, 1.5707964, true));
     player.reload = 10;
   }
 
@@ -162,28 +162,30 @@ void drawBackground() {
 }
 
 void handleBulletMobsCollision() {
-  auto bulletIt = bullets.begin();
-  while (bulletIt != bullets.end()) {
-    bool collision = false;
+    auto bulletIt = bullets.begin();
+    while (bulletIt != bullets.end()) {
+        bool collision = false;
 
-    for (auto &mob : mobs) {
-      if ((bulletIt->x > mob.x - 0.1) &&
-          (bulletIt->x < mob.x + 0.1) &&
-          (bulletIt->y > mob.y - 0.1) &&
-          (bulletIt->y < mob.y + 0.1)) {
-        // Collision with enemy
-        mob.health -= 1;
-        collision = true;
-        break;
-      }
-    }
+        for (auto &mob : mobs) {
+            // Check if the bullet belongs to the player and if it collides with a mob
+            if (bulletIt->belongsToPlayer &&
+                (bulletIt->x > mob.x - 0.1) &&
+                (bulletIt->x < mob.x + 0.1) &&
+                (bulletIt->y > mob.y - 0.1) &&
+                (bulletIt->y < mob.y + 0.1)) {
+                // Collision with enemy
+                mob.health -= 1;
+                collision = true;
+                break;
+            }
+        }
 
-    if (collision) {
-      bulletIt = bullets.erase(bulletIt);
-    } else {
-      bulletIt++;
+        if (collision) {
+            bulletIt = bullets.erase(bulletIt);
+        } else {
+            bulletIt++;
+        }
     }
-  }
 }
 
 void display() {
