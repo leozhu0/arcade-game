@@ -1,17 +1,23 @@
-#define GL_SILENCE_DEPRECATION
 #include "mobs.h"
+#include "bullet.h"
 #include <GL/glut.h>
 #include <iostream>
 
-Mob::Mob(float i_x, float i_y) {
+Mob::Mob(float i_x, float i_y, float x_dir, float y_dir) {
     // Initialize mob positions
     x = i_x;
     y = i_y;
 
     speed = 0.00002; 
 
-    x_direction = 1;
-    y_direction = 1;
+    x_direction = x_dir;
+    y_direction = y_dir;
+
+    shootCooldown = 100;
+}
+
+bool Mob::isAlive() const {
+    return health > 0; 
 }
 
 void Mob::handleBoundaryBounce(float &position, int &direction, float speed) {
@@ -24,7 +30,7 @@ void Mob::handleBoundaryBounce(float &position, int &direction, float speed) {
     }
 }
 
-void Mob::update() {
+void Mob::update(std::vector<Bullet>& bullets) {
     // Add logic to make mobs move automatically
     x += speed * x_direction;
     y += speed * y_direction;
@@ -32,50 +38,23 @@ void Mob::update() {
     // Add logic to handle mob boundaries or reset positions if needed
     handleBoundaryBounce(x, x_direction, speed);
     handleBoundaryBounce(y, y_direction, speed);
+
+    // Shooting logic
+    if (isAlive() && shootCooldown == 0) {
+        bullets.push_back(Bullet(x, y, 0.01, 3.0 * M_PI / 2.0, false)); // Create a new bullet with a downward direction
+        shootCooldown = 100; // Reset cooldown
+    } else {
+        shootCooldown--;
+    }
 }
 
 void Mob::draw() {
-    // Draw mobs
-
-    // Mob 1 (Red Triangle)
-    //glColor3f(1.0, 0.0, 0.0); // Red color for mob1
-    glBegin(GL_TRIANGLE_FAN);
-    glVertex2f(x, y + 0.1);
-    glVertex2f(x - 0.1, y - 0.1);
-    glVertex2f(x + 0.1, y - 0.1);
-    glEnd();
-
-    // // Mob 2 (Green Triangle)
-    // glColor3f(0.0, 1.0, 0.0); // Green color for mob2
-    // glBegin(GL_TRIANGLE_FAN);
-    // glVertex2f(mob2_x, mob2_y + 0.1);
-    // glVertex2f(mob2_x - 0.1, mob2_y - 0.1);
-    // glVertex2f(mob2_x + 0.1, mob2_y - 0.1);
-    // glEnd();
-
-    // // Mob 3 (Blue Triangle)
-    // glColor3f(0.0, 0.0, 1.0); // Blue color for mob3
-    // glBegin(GL_TRIANGLE_FAN);
-    // glVertex2f(mob3_x, mob3_y + 0.1);
-    // glVertex2f(mob3_x - 0.1, mob3_y - 0.1);
-    // glVertex2f(mob3_x + 0.1, mob3_y - 0.1);
-    // glEnd();
-
-    // // Draw name tags
-    // glColor3f(1.0, 1.0, 1.0); // White color for text
-
-    // glRasterPos2f(mob1_x - 0.05, mob1_y + 0.15);
-    // for (const char *c = "Mob 1"; *c != '\0'; c++) {
-    //     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10, *c);
-    // }
-
-    // glRasterPos2f(mob2_x - 0.05, mob2_y + 0.15);
-    // for (const char *c = "Mob 2"; *c != '\0'; c++) {
-    //     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10, *c);
-    // }
-
-    // glRasterPos2f(mob3_x - 0.05, mob3_y + 0.15);
-    // for (const char *c = "Mob 3"; *c != '\0'; c++) {
-    //     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10, *c);
-    // }
+    if (isAlive()) {
+        glColor3f(1.0, 0.0, 0.0); // Red color for mob1
+        glBegin(GL_TRIANGLE_FAN);
+        glVertex2f(x, y + 0.1);
+        glVertex2f(x - 0.1, y - 0.1);
+        glVertex2f(x + 0.1, y - 0.1);
+        glEnd();
+    }
 }
