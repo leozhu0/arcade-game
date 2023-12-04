@@ -32,6 +32,7 @@ bool isSpacePressed = false;
 void handleKeypress(unsigned char key, int x, int y) {
   if (gameState == START_SCREEN && key == ' ') {
     gameState = PLAYING;
+    glutPostRedisplay();
   } else if (gameState == PLAYING && key == ' ') {
     isSpacePressed = true;
   }
@@ -225,7 +226,7 @@ int main(int argc, char **argv) {
 
   // Set the initial window size
   glutInitWindowSize(1920, 1080); // Set width and height
-  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
   glutCreateWindow("Bullet Hell");
   glutDisplayFunc(display);
   textureLoader.loadBackgroundTexture("lib/images/space.jpeg");
