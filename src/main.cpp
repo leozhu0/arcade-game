@@ -61,6 +61,59 @@ void drawStartMessage(const char *message, void *font, float fontSize) {
     }
 }
 
+void drawScore() {
+    std::string scoreText = "Score: " + std::to_string(12); //fix to update score
+
+    // Calculate the width of the text string
+    int stringWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18, (unsigned char *)scoreText.c_str());
+
+    // Calculate the starting position to place the text in the top-right corner
+    float x = 1.1 - (static_cast<float>(stringWidth) / glutGet(GLUT_WINDOW_WIDTH));
+    float y = 0.9;
+
+    // Adjust the font size
+    glPointSize(30.0f);
+
+    glColor3f(1.0, 1.0, 1.0); // White color for text
+    glRasterPos2f(x, y);
+
+    // Draw each character in the score text
+    for (char character : scoreText) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, character);
+    }
+}
+
+void drawLevel() {
+    std::string levelText;
+
+    // Determine the level based on the player's score
+    if (player.score < 100) {
+        levelText = "Level: Beginner";
+    } else if (player.score < 500) {
+        levelText = "Level: Intermediate";
+    } else {
+        levelText = "Level: Advanced";
+    }
+
+    // Calculate the width of the text string
+    int stringWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18, (unsigned char *)levelText.c_str());
+
+    // Calculate the starting position to place the text in the top-left corner
+    float x = 1.05;
+    float y = 0.8;
+
+    // Adjust the font size
+    glPointSize(30.0f);
+
+    glColor3f(1.0, 1.0, 1.0); // White color for text
+    glRasterPos2f(x, y);
+
+    // Draw each character in the level text
+    for (char character : levelText) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, character);
+    }
+}
+
 void init() {
   // Set up the initial orthographic projection
   int windowWidth = 1920;
@@ -156,6 +209,9 @@ void display() {
   } else if (gameState == PLAYING) {
     // Draw the player
     player.draw();
+    glColor3f(1.0, 1.0, 1.0); // White color for text
+    drawScore();
+    drawLevel();
 
     for (size_t i = 0; i < bullets.size(); i++) {
       for (size_t j = 0; j < mobs.size(); j++) {
