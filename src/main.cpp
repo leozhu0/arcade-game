@@ -61,6 +61,25 @@ void handleKeyRelease(unsigned char key, int x, int y) {
 //     }
 // }
 
+void drawStar(float x, float y, float size) {
+    glPointSize(size);
+
+    // Set color for the star (e.g., yellow)
+    glColor3f(1.0, 1.0, 0.0);
+
+    glBegin(GL_LINE_LOOP);
+
+    for (int i = 0; i < 10; ++i) {
+        float angle = i * M_PI / 5.0; // Use M_PI for more accurate calculation
+        float radius = (i % 2 == 0) ? 0.2 : 0.1; // Alternate between two radii
+        float px = x + radius * std::cos(angle);
+        float py = y + radius * std::sin(angle);
+        glVertex2f(px, py);
+    }
+
+    glEnd();
+}
+
 void startDisplay() {
     glColor3f(1.0, 0.0, 0.0); // Red color for text
     glRasterPos2f(-0.33, 0.5);
@@ -88,6 +107,9 @@ void startDisplay() {
     for (char character : space) {
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character);
     }
+
+    drawStar(0.8, 0.5, 10.0);
+    drawStar(-0.8, -0.2, 10.0);
 
    // glutSwapBuffers;
 }
