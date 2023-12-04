@@ -42,23 +42,54 @@ void handleKeyRelease(unsigned char key, int x, int y) {
     isSpacePressed = false;
   }
 }
-void drawStartMessage(const char *message, void *font, float fontSize) {
-    // Calculate the width of the text string
-    int stringWidth = glutBitmapLength(font, (unsigned char *)message);
+// void drawStartMessage(const char *message, void *font, float fontSize, float y_position) {
+//     // Calculate the width of the text string
+//     int stringWidth = glutBitmapLength(font, (unsigned char *)message);
 
-    // Calculate the starting position to center the text horizontally
-    float x = -0.70 + (static_cast<float>(glutGet(GLUT_WINDOW_WIDTH)) - stringWidth) / (2.0 * glutGet(GLUT_WINDOW_WIDTH));
+//     // Calculate the starting position to center the text horizontally
+//     float x = -0.70 + (static_cast<float>(glutGet(GLUT_WINDOW_WIDTH)) - stringWidth) / (2.0 * glutGet(GLUT_WINDOW_WIDTH));
 
-    // Adjust the font size
-    glPointSize(fontSize);
+//     // Adjust the font size
+//     glPointSize(fontSize);
+
+//     glColor3f(1.0, 1.0, 1.0); // White color for text
+//     glRasterPos2f(x, y_position);
+
+//     while (*message) {
+//         glutBitmapCharacter(font, *message);
+//         message++;
+//     }
+// }
+
+void startDisplay() {
+    glColor3f(1.0, 0.0, 0.0); // Red color for text
+    glRasterPos2f(-0.33, 0.5);
+
+    char gameName[] = "WELCOME TO BULLET HELL";
+
+    for (char character : gameName) {
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character);
+    }
+
+    glColor3f(0.0, 0.0, 1.0); // Blue color for text
+    glRasterPos2f(-0.38, 0.4);
+
+    char createdBy[] = "By: Leo Z, John L, Kevin L, Jennifer L";
+
+    for (char character : createdBy) {
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character);
+    }
 
     glColor3f(1.0, 1.0, 1.0); // White color for text
-    glRasterPos2f(x, 0.0);
+    glRasterPos2f(-0.3, -0.2);
 
-    while (*message) {
-        glutBitmapCharacter(font, *message);
-        message++;
+    char space[] = "Press SPACE to start the game";
+
+    for (char character : space) {
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character);
     }
+
+   // glutSwapBuffers;
 }
 
 void drawScore() {
@@ -204,7 +235,8 @@ void display() {
   if (gameState == START_SCREEN) {
     // Draw start screen content
     glColor3f(1.0, 1.0, 1.0); // White color for text
-    drawStartMessage("Press SPACE to start the game", GLUT_BITMAP_HELVETICA_18, 30.0f);
+    //drawStartMessage("Press SPACE to start the game", GLUT_BITMAP_HELVETICA_18, 30.0f, 0.0);
+    startDisplay();
     // Add any other start screen content here
   } else if (gameState == PLAYING) {
     // Draw the player
