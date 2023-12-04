@@ -1,7 +1,7 @@
 #include "lib/bullet.h"
 #include "lib/mobs.h"
 #include "lib/player.h"
-#include "lib/stb_image.h"
+#include "lib/texture.h"
 #include <GL/glut.h>
 #include <vector>
 
@@ -16,7 +16,7 @@ int windowWidth = 1920;
 int windowHeight = 1080;
 int prevMouseX = windowWidth / 2;
 int prevMouseY = windowHeight / 2;
-GLuint backgroundTexture; // Declare a texture for the background
+Texture textureLoader;
 
 Player player(0.0f, -0.5f);  // Instantiate a player object at the initial position
 std::vector<Mob> mobs;       // Instantiate Mobs
@@ -28,7 +28,6 @@ Mob mob3(0.0, -0.0, -1, -1); // Middle
 std::vector<Bullet> bullets;
 std::vector<Bullet> bulletBuffer;
 
-// bullets.push_back(Bullet(0.1f,0.1f,1.7f));
 bool isSpacePressed = false;
 void handleKeypress(unsigned char key, int x, int y) {
   if (gameState == START_SCREEN && key == ' ') {
@@ -115,85 +114,39 @@ void update(int value) {
   glutTimerFunc(16, update, 0);
 }
 
-void loadBackgroundTexture(const char *filename) {
-  int width, height, channels;
-  unsigned char *image = stbi_load(filename, &width, &height, &channels, 3); // 3 channels for RGB
+// void handleBulletMobsCollision() {
+//     auto bulletIt = bullets.begin();
+//     while (bulletIt != bullets.end()) {
+//         bool collision = false;
 
-  if (image) {
-    glGenTextures(1, &backgroundTexture);
-    glBindTexture(GL_TEXTURE_2D, backgroundTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+//         for (auto &mob : mobs) {
+//             // Check if the bullet belongs to the player and if it collides with a mob
+//             if (bulletIt->belongsToPlayer &&
+//                 (bulletIt->x > mob.x - 0.1) &&
+//                 (bulletIt->x < mob.x + 0.1) &&
+//                 (bulletIt->y > mob.y - 0.1) &&
+//                 (bulletIt->y < mob.y + 0.1)) {
+//                 // Collision with enemy
+//                 mob.health -= 1;
+//                 collision = true;
+//                 break;
+//             }
+//         }
 
-    // Set texture parameters (you might need to adjust these based on your needs)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    stbi_image_free(image); // Free the image data after loading
-  } else {
-    // Handle error loading image
-    std::cerr << "Error loading background image." << std::endl;
-  }
-}
-
-void drawBackground() {
-  glEnable(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, backgroundTexture);
-
-  glBegin(GL_QUADS);
-
-  if (gameState == START_SCREEN) {
-    glColor3f(0.0, 0.0, 0.0); // Black color for background
-  } else {
-    glColor3f(1.0, 1.0, 1.0); // White color for background
-  }
-  glTexCoord2f(0.0, 0.0);
-  glVertex2f(-1.0, 1.0);
-  glTexCoord2f(1.0, 0.0);
-  glVertex2f(1.0, 1.0);
-  glTexCoord2f(1.0, 1.0);
-  glVertex2f(1.0, -1.0);
-  glTexCoord2f(0.0, 1.0);
-  glVertex2f(-1.0, -1.0);
-  glEnd();
-
-  glDisable(GL_TEXTURE_2D);
-}
-
-void handleBulletMobsCollision() {
-    auto bulletIt = bullets.begin();
-    while (bulletIt != bullets.end()) {
-        bool collision = false;
-
-        for (auto &mob : mobs) {
-            // Check if the bullet belongs to the player and if it collides with a mob
-            if (bulletIt->belongsToPlayer &&
-                (bulletIt->x > mob.x - 0.1) &&
-                (bulletIt->x < mob.x + 0.1) &&
-                (bulletIt->y > mob.y - 0.1) &&
-                (bulletIt->y < mob.y + 0.1)) {
-                // Collision with enemy
-                mob.health -= 1;
-                collision = true;
-                break;
-            }
-        }
-
-        if (collision) {
-            bulletIt = bullets.erase(bulletIt);
-        } else {
-            bulletIt++;
-        }
-    }
-}
+//         if (collision) {
+//             bulletIt = bullets.erase(bulletIt);
+//         } else {
+//             ++bulletIt;
+//         }
+//     }
+// }
 
 void display() {
   glClear(GL_COLOR_BUFFER_BIT);
 
   // Draw background
   glLoadIdentity();
-  drawBackground();
+  textureLoader.drawBackground(gameState == START_SCREEN);
 
   if (gameState == START_SCREEN) {
     // Draw start screen content
@@ -232,11 +185,11 @@ void display() {
       if (it->needsRemoval) {
         it = bullets.erase(it);
       } else {
-        it++;
+        ++it;
       }
     }
 
-    handleBulletMobsCollision();
+    //handleBulletMobsCollision();
   }
 
   glutSwapBuffers(); // Use double buffering
@@ -274,14 +227,13 @@ int main(int argc, char **argv) {
   glutInitWindowSize(1920, 1080); // Set width and height
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
   glutCreateWindow("Bullet Hell");
-  // glutFullScreen(); // Uncomment this line if you want the window to be fullscreen
   glutDisplayFunc(display);
+  textureLoader.loadBackgroundTexture("lib/images/space.jpeg");
+  textureLoader.drawBackground(gameState == START_SCREEN);
   glutPassiveMotionFunc(handleMouseMotion);
-  glutSetCursor(GLUT_CURSOR_NONE);
+  glutSetCursor(GLUT_CURSOR_NONE); // hides cursor
   glutTimerFunc(25, timer, 0);
-  init(); // Call the init function to set the background color
-  loadBackgroundTexture("lib/images/space.jpeg");
-  drawBackground();
+  init(); 
 
   glutMainLoop();
   return 0;
