@@ -5,7 +5,7 @@
 Texture texture;
 
 Player::Player(float initialX, float initialY) : x(initialX), y(initialY), reload(0), health(3) {
-    texture.loadPlayerTexture("lib/images/test.png");
+    texture.loadPlayerTexture("lib/images/space.jpeg");
 }
 
 void Player::update() {

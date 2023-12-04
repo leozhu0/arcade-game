@@ -115,6 +115,7 @@ void update(int value) {
   glutTimerFunc(16, update, 0);
 }
 
+// segfaulting 
 // void handleBulletMobsCollision() {
 //     auto bulletIt = bullets.begin();
 //     while (bulletIt != bullets.end()) {
