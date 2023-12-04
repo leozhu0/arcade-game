@@ -19,8 +19,8 @@ Player::Player(float initialX, float initialY) : x(initialX), y(initialY), reloa
   // Create OpenGL texture
   glGenTextures(1, &textureID);
   glBindTexture(GL_TEXTURE_2D, textureID);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-  // glGenerateMipmap(GL_TEXTURE_2Dp
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+  glGenerateMipmap(GL_TEXTURE_2D);
 
   // Set texture parameters (you can experiment with these)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -41,6 +41,7 @@ void Player::draw() const {
   // Draw player with texture
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, textureID);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   glBegin(GL_QUADS);
   glColor3f(1.0, 1.0, 1.0); // Specify color without alpha
@@ -57,6 +58,7 @@ void Player::draw() const {
   glEnd();
 
   glDisable(GL_TEXTURE_2D);
+  glDisable(GL_BLEND);
 }
 
 void Player::handleMouseMotion(int newX, int newY) {

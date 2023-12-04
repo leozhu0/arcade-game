@@ -161,32 +161,32 @@ void drawBackground() {
   glDisable(GL_TEXTURE_2D);
 }
 
-void handleBulletMobsCollision() {
-    auto bulletIt = bullets.begin();
-    while (bulletIt != bullets.end()) {
-        bool collision = false;
+// void handleBulletMobsCollision() {
+//     auto bulletIt = bullets.begin();
+//     while (bulletIt != bullets.end()) {
+//         bool collision = false;
 
-        for (auto &mob : mobs) {
-            // Check if the bullet belongs to the player and if it collides with a mob
-            if (bulletIt->belongsToPlayer &&
-                (bulletIt->x > mob.x - 0.1) &&
-                (bulletIt->x < mob.x + 0.1) &&
-                (bulletIt->y > mob.y - 0.1) &&
-                (bulletIt->y < mob.y + 0.1)) {
-                // Collision with enemy
-                mob.health -= 1;
-                collision = true;
-                break;
-            }
-        }
+//         for (auto &mob : mobs) {
+//             // Check if the bullet belongs to the player and if it collides with a mob
+//             if (bulletIt->belongsToPlayer &&
+//                 (bulletIt->x > mob.x - 0.1) &&
+//                 (bulletIt->x < mob.x + 0.1) &&
+//                 (bulletIt->y > mob.y - 0.1) &&
+//                 (bulletIt->y < mob.y + 0.1)) {
+//                 // Collision with enemy
+//                 mob.health -= 1;
+//                 collision = true;
+//                 break;
+//             }
+//         }
 
-        if (collision) {
-            bulletIt = bullets.erase(bulletIt);
-        } else {
-            bulletIt++;
-        }
-    }
-}
+//         if (collision) {
+//             bulletIt = bullets.erase(bulletIt);
+//         } else {
+//             ++bulletIt;
+//         }
+//     }
+// }
 
 void display() {
   glClear(GL_COLOR_BUFFER_BIT);
@@ -232,11 +232,11 @@ void display() {
       if (it->needsRemoval) {
         it = bullets.erase(it);
       } else {
-        it++;
+        ++it;
       }
     }
 
-    handleBulletMobsCollision();
+    //handleBulletMobsCollision();
   }
 
   glutSwapBuffers(); // Use double buffering
