@@ -40,13 +40,13 @@ void Mob::update(std::vector<Bullet>& bullets) {
     handleBoundaryBounce(y, y_direction, speed);
 
     // Shooting logic
-    // FIXME THEY KILL THEMSELVES CURRENTLY
-    if (isAlive() && shootCooldown == 0) {
-        bullets.push_back(Bullet(x, y, 0.01, 3.0 * M_PI / 2.0, false)); // Create a new bullet with a downward direction
-        shootCooldown = 100; // Reset cooldown
-    } else {
-        shootCooldown--;
-    }
+    // FIXME THEY KILL THEMSELVES CURRENTLY, also segfaults?
+    // if (isAlive() && shootCooldown == 0) {
+    //     bullets.push_back(Bullet(x, y, 0.01, 3.0 * M_PI / 2.0, false)); // Create a new bullet with a downward direction
+    //     shootCooldown = 100; // Reset cooldown
+    // } else {
+    //     shootCooldown--;
+    // }
 }
 
 void Mob::draw() {
