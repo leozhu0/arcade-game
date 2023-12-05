@@ -1,7 +1,8 @@
 #ifndef MOB_H
 #define MOB_H
-
 #include "player.h"
+#include <vector>
+#include <cmath>
 
 class Bullet;
 

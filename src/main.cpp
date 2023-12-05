@@ -4,6 +4,8 @@
 #include "lib/texture.h"
 #include <GL/glut.h>
 #include <vector>
+#include <cmath>
+#include <string>
 
 enum GameState {
   START_SCREEN,

@@ -1,4 +1,5 @@
 #define STB_IMAGE_IMPLEMENTATION
+#include <GL/glut.h>
 #include "texture.h"
 #include "stb_image.h"
 
