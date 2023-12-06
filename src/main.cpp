@@ -28,8 +28,10 @@ Player player(0.0f, -0.5f); // Instantiate a player object at the initial positi
 std::vector<Mob> mobs;      // Instantiate Mobs
 std::vector<Mob> mobBuffer;
 Mob mob1(-0.9, 0.9, 1, -1);  // Left corner
-Mob mob2(0.9, 0.9, 1, 1);    // Right corner
-Mob mob3(0.0, -0.0, -1, -1); // Middle
+Mob mob2(0.9, 0.9, -1, -1);    // Right corner
+Mob mob3(0.0, 0.0, 0, 1); // Middle
+Mob mob4(-0.45, 0.45, 1, 1);  
+Mob mob5(0.45, 0.45, -1, 1);   
 
 // Predeclares vector of bullets to be used later
 std::vector<Bullet> bullets;
@@ -46,6 +48,8 @@ void handleKeypress(unsigned char key, int x, int y) {
     mobs.push_back(mob1);
     mobs.push_back(mob2);
     mobs.push_back(mob3);
+    mobs.push_back(mob4);
+    mobs.push_back(mob5);
     glutPostRedisplay();
   } else if (gameState == PLAYING && key == ' ') {
     isSpacePressed = true;
@@ -217,7 +221,7 @@ void update(int value) {
   glutKeyboardUpFunc(handleKeyRelease);
 
   if (gameState == PLAYING && isSpacePressed && player.reload == 0) {
-    bullets.push_back(Bullet(player.x, player.y, 0.01, 1.5707964, 0.005, true));
+    bullets.push_back(Bullet(player.x, player.y, 0.01, 1.5707964, 0.015, true));
     player.reload = 10;
   }
 
@@ -349,6 +353,8 @@ int main(int argc, char **argv) {
   mobs.push_back(mob1);
   mobs.push_back(mob2);
   mobs.push_back(mob3);
+  mobs.push_back(mob4);
+  mobs.push_back(mob5);
 
   glutInit(&argc, argv);
 

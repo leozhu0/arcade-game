@@ -12,7 +12,7 @@ Mob::Mob(float i_x, float i_y, float x_dir, float y_dir) {
     x = i_x;
     y = i_y;
 
-    speed = 0.00002; 
+    speed = 0.002; 
 
     x_direction = x_dir;
     y_direction = y_dir;
@@ -46,8 +46,11 @@ void Mob::update() {
 
     if (reload != 0) --reload;
     else if (isAlive()) {
-        bullets.push_back(Bullet(x, y, 0.05, -1.5707964, 0.0005, false));
-        reload = 5000;
+        bullets.push_back(Bullet(x, y, 0.04, -1.5707964, 0.005, false));
+        bullets.push_back(Bullet(x, y, 0.04, 1.5707964, 0.005, false));
+        bullets.push_back(Bullet(x, y, 0.04, 0, 0.005, false));
+        bullets.push_back(Bullet(x, y, 0.04, 3.141592, 0.005, false));
+        reload = 50;
     }
 
     // Shooting logic

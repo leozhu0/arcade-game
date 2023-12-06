@@ -16,7 +16,7 @@ public:
     void draw();
     // Add necessary data members for mobs
     float x, y;
-    int health = 100;
+    int health = 20;
     float speed;
     float x_direction, y_direction;
 
