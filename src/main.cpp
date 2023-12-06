@@ -206,21 +206,33 @@ void update(int value) {
 
   player.update();
 
-  for (size_t i = 0; i < bullets.size(); i++) {
-    for (size_t j = 0; j < mobs.size(); j++) {
-      if ((bullets[i].x > mobs[j].x - 0.1) &&
-      (bullets[i].x < mobs[j].x + 0.1) &&
-      (bullets[i].y > mobs[j].y - 0.1) &&
-      (bullets[i].y < mobs[j].y + 0.1)) {
+  // for (size_t i = 0; i < bullets.size(); i++) {
+  //   for (size_t j = 0; j < mobs.size(); j++) {
+  //     if ((bullets[i].x > mobs[j].x - 0.1) &&
+  //     (bullets[i].x < mobs[j].x + 0.1) &&
+  //     (bullets[i].y > mobs[j].y - 0.1) &&
+  //     (bullets[i].y < mobs[j].y + 0.1)) {
           
-        mobs[j].health -= 1;
-        bullets[i].needsRemoval = true;
+  //       mobs[j].health -= 1;
+  //       bullets[i].needsRemoval = true;
         
-      }
-    }
-  }
+  //     }
+  //   }
+  // }
 
   for (Bullet &bullet : bullets) {
+    for (Mob &mob : mobs) {
+      if ((bullet.x > mob.x - 0.1) &&
+      (bullet.x < mob.x + 0.1) &&
+      (bullet.y > mob.y - 0.1) &&
+      (bullet.y < mob.y + 0.1)) {
+        
+        --mob.health;
+        bullet.needsRemoval = true;
+      }
+    }
+
+
     bullet.update();
     if (!bullet.needsRemoval) {
       bulletBuffer.push_back(bullet);
@@ -235,6 +247,11 @@ void update(int value) {
 
     for (Bullet& bullet : mob.bullets) {
       bullet.update();
+
+      float distance = sqrtf(powf(player.x - bullet.x, 2) + powf(player.y - bullet.y, 2));
+
+      if (distance <= bullet.radius) std::cout << "game over" << std::endl; // GAME OVER
+
       if (!bullet.needsRemoval) {
         mob.bulletBuffer.push_back(bullet);
       }
@@ -252,7 +269,7 @@ void update(int value) {
   mobBuffer.clear();
 
   glutPostRedisplay();
-  glutTimerFunc(16, update, 0);
+  // glutTimerFunc(16, update, 0);
 }
 
 // segfaulting 
