@@ -3,15 +3,16 @@
 #include "lib/player.h"
 #include "lib/texture.h"
 #include <GL/glut.h>
-#include <vector>
 #include <cmath>
 #include <string>
 #include <time.h>
+#include <vector>
 
 enum GameState {
   START_SCREEN,
   PLAYING,
-  GAME_OVER
+  GAME_OVER,
+  GAME_WON
 };
 
 static int currentTime = 0;
@@ -23,8 +24,8 @@ int prevMouseX = windowWidth / 2;
 int prevMouseY = windowHeight / 2;
 Texture textureLoader;
 
-Player player(0.0f, -0.5f);  // Instantiate a player object at the initial position
-std::vector<Mob> mobs;       // Instantiate Mobs
+Player player(0.0f, -0.5f); // Instantiate a player object at the initial position
+std::vector<Mob> mobs;      // Instantiate Mobs
 std::vector<Mob> mobBuffer;
 Mob mob1(-0.9, 0.9, 1, -1);  // Left corner
 Mob mob2(0.9, 0.9, 1, 1);    // Right corner
@@ -36,8 +37,15 @@ std::vector<Bullet> bulletBuffer;
 
 bool isSpacePressed = false;
 void handleKeypress(unsigned char key, int x, int y) {
-  if (gameState == START_SCREEN && key == ' ') {
+  if (gameState == START_SCREEN && key == char(13) || gameState == GAME_OVER && key == char(13) || gameState == GAME_WON && key == char(13)) {
     gameState = PLAYING;
+    // Reset game-related variables when transitioning to the PLAYING state
+    score = 0;
+    currentTime = 0;
+    mobs.clear(); // Clear existing mobs
+    mobs.push_back(mob1);
+    mobs.push_back(mob2);
+    mobs.push_back(mob3);
     glutPostRedisplay();
   } else if (gameState == PLAYING && key == ' ') {
     isSpacePressed = true;
@@ -51,92 +59,131 @@ void handleKeyRelease(unsigned char key, int x, int y) {
 }
 
 void drawStar(float x, float y, float size) {
-    glPointSize(size);
+  glPointSize(size);
 
-    // Set color for the star (e.g., yellow)
-    glColor3f(1.0, 1.0, 0.0);
+  // Set color for the star (e.g., yellow)
+  glColor3f(1.0, 1.0, 0.0);
 
-    glBegin(GL_LINE_LOOP);
+  glBegin(GL_LINE_LOOP);
 
-    for (int i = 0; i < 10; ++i) {
-        float angle = i * M_PI / 5.0; // Use M_PI for more accurate calculation
-        float radius = (i % 2 == 0) ? 0.2 : 0.1; // Alternate between two radii
-        float px = x + radius * std::cos(angle);
-        float py = y + radius * std::sin(angle);
-        glVertex2f(px, py);
-    }
+  for (int i = 0; i < 10; ++i) {
+    float angle = i * M_PI / 5.0;            // Use M_PI for more accurate calculation
+    float radius = (i % 2 == 0) ? 0.2 : 0.1; // Alternate between two radii
+    float px = x + radius * std::cos(angle);
+    float py = y + radius * std::sin(angle);
+    glVertex2f(px, py);
+  }
 
-    glEnd();
+  glEnd();
 }
 
 void startDisplay() {
-    glColor3f(1.0, 0.0, 0.0); // Red color for text
-    glRasterPos2f(-0.33, 0.5);
+  glColor3f(1.0, 0.0, 0.0); // Red color for text
+  glRasterPos2f(-0.33, 0.5);
 
-    char gameName[] = "WELCOME TO BULLET HELL";
+  char gameName[] = "WELCOME TO BULLET HELL";
 
-    for (char character : gameName) {
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character);
-    }
+  for (char character : gameName) {
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character);
+  }
 
-    glColor3f(0.0, 0.0, 1.0); // Blue color for text
-    glRasterPos2f(-0.38, 0.4);
+  glColor3f(0.0, 0.0, 1.0); // Blue color for text
+  glRasterPos2f(-0.38, 0.4);
 
-    char createdBy[] = "By: Leo Z, John L, Kevin L, Jennifer L";
+  char createdBy[] = "By: Leo Z, John L, Kevin L, Jennifer L";
 
-    for (char character : createdBy) {
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character);
-    }
+  for (char character : createdBy) {
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character);
+  }
 
-    glColor3f(1.0, 1.0, 1.0); // White color for text
-    glRasterPos2f(-0.3, -0.2);
+  glColor3f(1.0, 1.0, 1.0); // White color for text
+  glRasterPos2f(-0.3, -0.2);
 
-    char space[] = "Press SPACE to start the game";
+  char space[] = "Press ENTER to start the game";
 
-    for (char character : space) {
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character);
-    }
+  for (char character : space) {
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character);
+  }
 
-    drawStar(0.8, 0.5, 10.0);
-    drawStar(-0.8, -0.2, 10.0);
+  drawStar(0.8, 0.5, 10.0);
+  drawStar(-0.8, -0.2, 10.0);
 
-   // glutSwapBuffers;
+  // glutSwapBuffers;
 }
 
 void drawScore() {
 
-    score = 120000 - (currentTime);
+  score = 120000 - (currentTime);
 
-    std::string scoreText = "Score: " + std::to_string(score); //fix to update score
+  if (score == 0) {
+    gameState = GAME_OVER;
+  }
 
-    // Calculate the width of the text string
-    int stringWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18, (unsigned char *)scoreText.c_str());
+  // std::string scoreText = "Score: " + std::to_string(score); // fix to update score
 
-    // Calculate the starting position to place the text in the top-right corner
-    float x = 1.1 - (static_cast<float>(stringWidth) / glutGet(GLUT_WINDOW_WIDTH));
-    float y = 0.9;
+  // // Calculate the width of the text string
+  // int stringWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18, (unsigned char *)scoreText.c_str());
 
-    // Adjust the font size
-    glPointSize(30.0f);
+  // // Calculate the starting position to place the text in the top-right corner
+  // float x = 1.1 - (static_cast<float>(stringWidth) / glutGet(GLUT_WINDOW_WIDTH));
+  // float y = 0.9;
 
-    glColor3f(1.0, 1.0, 1.0); // White color for text
-    glRasterPos2f(x, y);
+  // // Adjust the font size
+  // glPointSize(30.0f);
 
-    // Draw each character in the score text
-    for (char character : scoreText) {
-        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, character);
-    }
+  // glColor3f(1.0, 1.0, 1.0); // White color for text
+  // glRasterPos2f(x, y);
+
+  // // Draw each character in the score text
+  // for (char character : scoreText) {
+  //   glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, character);
+  // }
 }
 
 void endDisplay() {
-    glColor3f(1.0, 0.0, 0.0); // Red color for text
-    glRasterPos2f(-0.3, 0.5);
+  glColor3f(1.0, 0.0, 0.0); // Red color for text
+  glRasterPos2f(-0.3, 0.5);
 
-    char gameOverText[] = "GAME OVER SCORE:";
-    for (char character : gameOverText) {
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character);
-    }
+  char gameOverText[] = "GAME OVER YOU LOST!";
+  for (char character : gameOverText) {
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character);
+  }
 
+  glColor3f(1.0, 1.0, 1.0); // White color for text
+  glRasterPos2f(-0.35, -0.2);
+
+  char space[] = "Press ENTER to start the game";
+
+  for (char character : space) {
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character);
+  }
+}
+
+void winDisplay() {
+  glColor3f(1.0, 0.0, 0.0); // Red color for text
+  glRasterPos2f(-0.3, 0.5);
+
+  char gameWinText[] = "YOU WON!! SCORE:";
+  for (char character : gameWinText) {
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character);
+  }
+
+  // Display the actual score
+  std::string scoreText = std::to_string(score);
+  glColor3f(1.0, 1.0, 1.0); // White color for text
+
+  for (char character : scoreText) {
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character);
+  }
+
+  glColor3f(1.0, 1.0, 1.0); // White color for text
+  glRasterPos2f(-0.35, -0.2);
+
+  char space[] = "Press ENTER to start the game";
+
+  for (char character : space) {
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character);
+  }
 }
 
 void init() {
@@ -160,8 +207,8 @@ void init() {
   glMatrixMode(GL_MODELVIEW);
 
   glClearColor(0.0, 0.0, 0.0, 0.0); // Set background color to black
-  textureLoader.loadPlayerTexture("lib/images/testCannon.png");
-  textureLoader.loadMobTexture("lib/images/mobs.png");
+  textureLoader.loadPlayerTexture("src/lib/images/testCannon.png");
+  textureLoader.loadMobTexture("src/lib/images/mobs.png");
 }
 
 // Updates the position and values of objects then redraws
@@ -176,32 +223,17 @@ void update(int value) {
 
   player.update();
 
-  // for (size_t i = 0; i < bullets.size(); i++) {
-  //   for (size_t j = 0; j < mobs.size(); j++) {
-  //     if ((bullets[i].x > mobs[j].x - 0.1) &&
-  //     (bullets[i].x < mobs[j].x + 0.1) &&
-  //     (bullets[i].y > mobs[j].y - 0.1) &&
-  //     (bullets[i].y < mobs[j].y + 0.1)) {
-          
-  //       mobs[j].health -= 1;
-  //       bullets[i].needsRemoval = true;
-        
-  //     }
-  //   }
-  // }
-
   for (Bullet &bullet : bullets) {
     for (Mob &mob : mobs) {
       if ((bullet.x > mob.x - 0.1) &&
-      (bullet.x < mob.x + 0.1) &&
-      (bullet.y > mob.y - 0.1) &&
-      (bullet.y < mob.y + 0.1)) {
-        
+          (bullet.x < mob.x + 0.1) &&
+          (bullet.y > mob.y - 0.1) &&
+          (bullet.y < mob.y + 0.1)) {
+
         --mob.health;
         bullet.needsRemoval = true;
       }
     }
-
 
     bullet.update();
     if (!bullet.needsRemoval) {
@@ -212,15 +244,18 @@ void update(int value) {
   bullets = bulletBuffer;
   bulletBuffer.clear();
 
-  for (Mob& mob : mobs) {
+  for (Mob &mob : mobs) {
     mob.update();
 
-    for (Bullet& bullet : mob.bullets) {
+    for (Bullet &bullet : mob.bullets) {
       bullet.update();
 
       float distance = sqrtf(powf(player.x - bullet.x, 2) + powf(player.y - bullet.y, 2));
 
-      if (distance <= bullet.radius) std::cout << "game over" << std::endl; // GAME OVER
+      if (distance <= bullet.radius) {
+        // GAME OVER
+        gameState = GAME_OVER;
+      }
 
       if (!bullet.needsRemoval) {
         mob.bulletBuffer.push_back(bullet);
@@ -238,37 +273,16 @@ void update(int value) {
   mobs = mobBuffer;
   mobBuffer.clear();
 
+  if (mobs.empty()) {
+    // Do something when there are no more mobs (e.g., transition to GAME_OVER state)
+    gameState = GAME_WON;
+  }
+
   glutPostRedisplay();
-  // glutTimerFunc(16, update, 0);
+  glutTimerFunc(16, update, 0);
+
+  currentTime += 16;
 }
-
-// segfaulting 
-// void handleBulletMobsCollision() {
-//     auto bulletIt = bullets.begin();
-//     while (bulletIt != bullets.end()) {
-//         bool collision = false;
-
-//         for (auto &mob : mobs) {
-//             // Check if the bullet belongs to the player and if it collides with a mob
-//             if (bulletIt->belongsToPlayer &&
-//                 (bulletIt->x > mob.x - 0.1) &&
-//                 (bulletIt->x < mob.x + 0.1) &&
-//                 (bulletIt->y > mob.y - 0.1) &&
-//                 (bulletIt->y < mob.y + 0.1)) {
-//                 // Collision with enemy
-//                 mob.health -= 1;
-//                 collision = true;
-//                 break;
-//             }
-//         }
-
-//         if (collision) {
-//             bulletIt = bullets.erase(bulletIt);
-//         } else {
-//             ++bulletIt;
-//         }
-//     }
-// }
 
 void display() {
   glClear(GL_COLOR_BUFFER_BIT);
@@ -280,7 +294,7 @@ void display() {
   if (gameState == START_SCREEN) {
     // Draw start screen content
     glColor3f(1.0, 1.0, 1.0); // White color for text
-    //drawStartMessage("Press SPACE to start the game", GLUT_BITMAP_HELVETICA_18, 30.0f, 0.0);
+    // drawStartMessage("Press SPACE to start the game", GLUT_BITMAP_HELVETICA_18, 30.0f, 0.0);
     startDisplay();
     // Add any other start screen content here
   } else if (gameState == PLAYING) {
@@ -288,65 +302,32 @@ void display() {
     player.draw();
     glColor3f(1.0, 1.0, 1.0); // White color for text
     drawScore();
-    //drawLevel();
 
-    // for (size_t i = 0; i < bullets.size(); i++) {
-    //   for (size_t j = 0; j < mobs.size(); j++) {
-    //     if ((bullets[i].x > mobs[j].x - 0.1) &&
-    //         (bullets[i].x < mobs[j].x + 0.1) &&
-    //         (bullets[i].y > mobs[j].y - 0.1) &&
-    //         (bullets[i].y < mobs[j].y + 0.1)) {
-    //       // Collision with enemy
-    //       mobs[j].health -= 1;
-    //       bullets.erase(bullets.begin() + i);
-    //     }
-    //   }
-    //   bullets[i].draw();
-    // }
-
-    for (Bullet& bullet : bullets) {
+    for (Bullet &bullet : bullets) {
       bullet.draw();
     }
 
-    for (Mob& mob : mobs) {
+    for (Mob &mob : mobs) {
       mob.draw();
 
-      for (Bullet& bullet : mob.bullets) {
+      for (Bullet &bullet : mob.bullets) {
         bullet.draw();
       }
     }
-
-    // Draw the mobs
-    // for (Mob &mob : mobs) {
-    // //   mob.update(bullets); // Update the mobs object
-    // //   if (mob.health > 0) {
-    //   mob.draw();
-    // //   }
-    // }
-
-    // Erase bullets marked for removal
-    // auto it = bullets.begin();
-    // while (it != bullets.end()) {
-    //   if (it->needsRemoval) {
-    //     it = bullets.erase(it);
-    //   } else {
-    //     ++it;
-    //   }
-    // }
-
-    //handleBulletMobsCollision();
-  }
-  else if (gameState == GAME_OVER) {
+  } else if (gameState == GAME_OVER) {
+    score = 0;
     endDisplay();
+  } else if (gameState == GAME_WON) {
+    winDisplay();
   }
 
-  glutSwapBuffers(); // Use double buffering
+    glutSwapBuffers(); // Use double buffering
 }
 
 void timer(int value) {
   update(value);
-  glutPostRedisplay();             // Request a redraw
-  glutTimerFunc(16, timer, value); // Schedule the next update after 16 milliseconds
+  glutPostRedisplay(); // Request a redraw
+  // glutTimerFunc(16, timer, value); // Schedule the next update after 16 milliseconds
 }
 
 void handleMouseMotion(int newX, int newY) {
@@ -376,12 +357,12 @@ int main(int argc, char **argv) {
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
   glutCreateWindow("Bullet Hell");
   glutDisplayFunc(display);
-  textureLoader.loadBackgroundTexture("lib/images/space.jpeg");
+  textureLoader.loadBackgroundTexture("src/lib/images/space.jpeg");
   textureLoader.drawBackground(gameState == START_SCREEN);
   glutPassiveMotionFunc(handleMouseMotion);
   glutSetCursor(GLUT_CURSOR_NONE); // hides cursor
   glutTimerFunc(25, timer, 0);
-  init(); 
+  init();
 
   glutMainLoop();
   return 0;
