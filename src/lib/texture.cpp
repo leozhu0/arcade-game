@@ -3,8 +3,8 @@
 #include "texture.h"
 #include "stb_image.h"
 
-GLuint Texture::backgroundTexture = 0;
-GLuint Texture::playerTexture = 0;
+GLuint Texture::backgroundTexture = 1;
+GLuint Texture::playerTexture = 1;
 
 GLuint Texture::loadTexture(const char *filename) {
   GLuint textureID;
@@ -15,9 +15,9 @@ GLuint Texture::loadTexture(const char *filename) {
     std::cout << "Image loaded successfully: " << filename << " Width: " << width << ", Height: " << height << ", Channels: " << channels << "\n"; // FIXME REMOVE LATER
     glGenTextures(1, &textureID);
     GLenum error = glGetError();
-if (error != GL_NO_ERROR) {
-    std::cerr << "OpenGL Error after glGenTextures: " << error << std::endl;
-}
+    if (error != GL_NO_ERROR) {
+      std::cerr << "OpenGL Error after glGenTextures: " << error << std::endl;
+    }
     glBindTexture(GL_TEXTURE_2D, textureID);
     if (channels == 3) {
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
@@ -55,10 +55,14 @@ void Texture::drawBackground(bool isStartScreen) {
     glColor3f(1.0, 1.0, 1.0); // White color for background
   }
 
-  glTexCoord2f(0.0, 0.0); glVertex2f(-1.0, 1.0); // bottom left
-  glTexCoord2f(1.0, 0.0); glVertex2f(1.0, 1.0); // bottom right
-  glTexCoord2f(1.0, 1.0); glVertex2f(1.0, -1.0); // top right
-  glTexCoord2f(0.0, 1.0); glVertex2f(-1.0, -1.0); // top left
+  glTexCoord2f(0.0, 0.0);
+  glVertex2f(-1.0, 1.0); // bottom left
+  glTexCoord2f(1.0, 0.0);
+  glVertex2f(1.0, 1.0); // bottom right
+  glTexCoord2f(1.0, 1.0);
+  glVertex2f(1.0, -1.0); // top right
+  glTexCoord2f(0.0, 1.0);
+  glVertex2f(-1.0, -1.0); // top left
   glEnd();
   glDisable(GL_TEXTURE_2D);
 }
@@ -68,17 +72,22 @@ void Texture::loadPlayerTexture(const char *filename) {
 }
 
 void Texture::drawPlayer(float x, float y) {
-  //std::cout << "playyer id " << playerTexture << std::endl;
+  glEnable(GL_TEXTURE_2D);
   glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glBindTexture(GL_TEXTURE_2D, playerTexture);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glBegin(GL_QUADS);
-  glColor4f(0, 0, 0, 1); // White color for player
-  glTexCoord2f(0.0, 0.0); glVertex2f(x - 0.1, y - 0.1); //bottom left
-  glTexCoord2f(1.0, 0.0); glVertex2f(x + 0.1, y - 0.1); // bottom right
-  glTexCoord2f(1.0, 1.0); glVertex2f(x + 0.1, y + 0.1); // top right
-  glTexCoord2f(0.0, 1.0); glVertex2f(x - 0.1, y + 0.1); // top left
+  glColor4f(1.0, 1.0, 1.0, 1.0); // White color for background
+
+  glTexCoord2f(0.0, 0.0);
+  glVertex2f(x - 0.1, y + 0.1); // bottom left
+  glTexCoord2f(1.0, 0.0);
+  glVertex2f(x + 0.1, y + 0.1); // bottom right
+  glTexCoord2f(1.0, 1.0);
+  glVertex2f(x + 0.1, y - 0.1); // top right
+  glTexCoord2f(0.0, 1.0);
+  glVertex2f(x - 0.1, y - 0.1); // top left
   glEnd();
-  glDisable(GL_BLEND);
   glDisable(GL_TEXTURE_2D);
+  glDisable(GL_BLEND);
 }
