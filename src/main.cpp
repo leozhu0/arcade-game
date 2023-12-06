@@ -6,6 +6,7 @@
 #include <vector>
 #include <cmath>
 #include <string>
+#include <time.h>
 
 enum GameState {
   START_SCREEN,
@@ -13,6 +14,8 @@ enum GameState {
   GAME_OVER
 };
 
+static int currentTime = 0;
+static int score = 0;
 GameState gameState = START_SCREEN;
 int windowWidth = 1920;
 int windowHeight = 1080;
@@ -45,24 +48,6 @@ void handleKeyRelease(unsigned char key, int x, int y) {
     isSpacePressed = false;
   }
 }
-// void drawStartMessage(const char *message, void *font, float fontSize, float y_position) {
-//     // Calculate the width of the text string
-//     int stringWidth = glutBitmapLength(font, (unsigned char *)message);
-
-//     // Calculate the starting position to center the text horizontally
-//     float x = -0.70 + (static_cast<float>(glutGet(GLUT_WINDOW_WIDTH)) - stringWidth) / (2.0 * glutGet(GLUT_WINDOW_WIDTH));
-
-//     // Adjust the font size
-//     glPointSize(fontSize);
-
-//     glColor3f(1.0, 1.0, 1.0); // White color for text
-//     glRasterPos2f(x, y_position);
-
-//     while (*message) {
-//         glutBitmapCharacter(font, *message);
-//         message++;
-//     }
-// }
 
 void drawStar(float x, float y, float size) {
     glPointSize(size);
@@ -118,7 +103,10 @@ void startDisplay() {
 }
 
 void drawScore() {
-    std::string scoreText = "Score: " + std::to_string(12); //fix to update score
+
+    score = 120000 - (currentTime);
+
+    std::string scoreText = "Score: " + std::to_string(score); //fix to update score
 
     // Calculate the width of the text string
     int stringWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18, (unsigned char *)scoreText.c_str());
@@ -139,35 +127,15 @@ void drawScore() {
     }
 }
 
-void drawLevel() {
-    std::string levelText;
+void endDisplay() {
+    glColor3f(1.0, 0.0, 0.0); // Red color for text
+    glRasterPos2f(-0.3, 0.5);
 
-    // Determine the level based on the player's score
-    if (player.score < 100) {
-        levelText = "Level: Beginner";
-    } else if (player.score < 500) {
-        levelText = "Level: Intermediate";
-    } else {
-        levelText = "Level: Advanced";
+    char gameOverText[] = "GAME OVER SCORE:";
+    for (char character : gameOverText) {
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character);
     }
 
-    // Calculate the width of the text string
-    int stringWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18, (unsigned char *)levelText.c_str());
-
-    // Calculate the starting position to place the text in the top-left corner
-    float x = 1.05;
-    float y = 0.8;
-
-    // Adjust the font size
-    glPointSize(30.0f);
-
-    glColor3f(1.0, 1.0, 1.0); // White color for text
-    glRasterPos2f(x, y);
-
-    // Draw each character in the level text
-    for (char character : levelText) {
-        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, character);
-    }
 }
 
 void init() {
@@ -191,6 +159,7 @@ void init() {
   glMatrixMode(GL_MODELVIEW);
 
   glClearColor(0.0, 0.0, 0.0, 0.0); // Set background color to black
+  textureLoader.loadPlayerTexture("lib/images/testCannon.png");
 }
 
 // Updates the position and values of objects then redraws
@@ -220,7 +189,14 @@ void update(int value) {
   bulletBuffer.clear();
 
   glutPostRedisplay();
-  glutTimerFunc(16, update, 0);
+  //glutTimerFunc(16, update, 0);
+
+  currentTime += 16;
+
+  if (currentTime >= 120000) {
+    gameState = GAME_OVER;
+    // glutPostRedisplay(); // Trigger a redraw to show the game over screen immediately
+  }
 }
 
 // segfaulting 
@@ -269,7 +245,7 @@ void display() {
     player.draw();
     glColor3f(1.0, 1.0, 1.0); // White color for text
     drawScore();
-    drawLevel();
+    //drawLevel();
 
     for (size_t i = 0; i < bullets.size(); i++) {
       for (size_t j = 0; j < mobs.size(); j++) {
@@ -304,6 +280,9 @@ void display() {
     }
 
     //handleBulletMobsCollision();
+  }
+  else if (gameState == GAME_OVER) {
+    endDisplay();
   }
 
   glutSwapBuffers(); // Use double buffering

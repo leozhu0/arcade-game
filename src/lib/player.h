@@ -13,7 +13,6 @@ public:
     float x, y;
     int reload; // in units of frame
     int health;
-    int score;
 };
 
 #endif
