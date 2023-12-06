@@ -19,7 +19,7 @@ bool Mob::isAlive() const {
     return health > 0; 
 }
 
-void Mob::handleBoundaryBounce(float &position, int &direction, float speed) {
+void Mob::handleBoundaryBounce(float& position, float& direction, float speed) {
     if (position > 1.0 || position < -1.0) {
         direction = -direction; // Reverse direction
         position += speed * direction; // Move away from the border
@@ -31,6 +31,9 @@ void Mob::handleBoundaryBounce(float &position, int &direction, float speed) {
 
 void Mob::update() {
     // Add logic to make mobs move automatically
+    x_direction /= sqrtf(powf(x_direction,2.0) + powf(y_direction,2.0));
+    y_direction /= sqrtf(powf(x_direction,2.0) + powf(y_direction,2.0));
+
     x += speed * x_direction;
     y += speed * y_direction;
 

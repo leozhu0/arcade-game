@@ -18,14 +18,14 @@ public:
     float x, y;
     int health = 100;
     float speed;
-    int x_direction, y_direction;
+    float x_direction, y_direction;
 
     std::vector<Bullet> bullets;
     std::vector<Bullet> bulletBuffer;
     size_t reload;
     
     bool isAlive() const;
-    void handleBoundaryBounce(float &coord, int &direction, float speed);
+    void handleBoundaryBounce(float& coord, float& direction, float speed);
 };
 
 #endif // MOBS_H
