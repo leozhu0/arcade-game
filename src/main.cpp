@@ -25,6 +25,7 @@ Texture textureLoader;
 
 Player player(0.0f, -0.5f);  // Instantiate a player object at the initial position
 std::vector<Mob> mobs;       // Instantiate Mobs
+std::vector<Mob> mobBuffer;
 Mob mob1(-0.9, 0.9, 1, -1);  // Left corner
 Mob mob2(0.9, 0.9, 1, 1);    // Right corner
 Mob mob3(0.0, -0.0, -1, -1); // Middle
@@ -168,14 +169,24 @@ void update(int value) {
   glutKeyboardUpFunc(handleKeyRelease);
 
   if (gameState == PLAYING && isSpacePressed && player.reload == 0) {
-    bullets.push_back(Bullet(player.x, player.y, 0.01, 1.5707964, true));
+    bullets.push_back(Bullet(player.x, player.y, 0.01, 1.5707964, 0.005, true));
     player.reload = 10;
   }
 
   player.update();
 
-  for (Mob &mob : mobs) {
-    mob.update(bullets); // Pass the bullets vector to the update function
+  for (size_t i = 0; i < bullets.size(); i++) {
+    for (size_t j = 0; j < mobs.size(); j++) {
+      if ((bullets[i].x > mobs[j].x - 0.1) &&
+      (bullets[i].x < mobs[j].x + 0.1) &&
+      (bullets[i].y > mobs[j].y - 0.1) &&
+      (bullets[i].y < mobs[j].y + 0.1)) {
+          
+        mobs[j].health -= 1;
+        bullets[i].needsRemoval = true;
+        
+      }
+    }
   }
 
   for (Bullet &bullet : bullets) {
@@ -187,6 +198,27 @@ void update(int value) {
 
   bullets = bulletBuffer;
   bulletBuffer.clear();
+
+  for (Mob& mob : mobs) {
+    mob.update();
+
+    for (Bullet& bullet : mob.bullets) {
+      bullet.update();
+      if (!bullet.needsRemoval) {
+        mob.bulletBuffer.push_back(bullet);
+      }
+    }
+
+    mob.bullets = mob.bulletBuffer;
+    mob.bulletBuffer.clear();
+
+    if (mob.health > 0) {
+      mobBuffer.push_back(mob);
+    }
+  }
+
+  mobs = mobBuffer;
+  mobBuffer.clear();
 
   glutPostRedisplay();
   //glutTimerFunc(16, update, 0);
@@ -247,37 +279,49 @@ void display() {
     drawScore();
     //drawLevel();
 
-    for (size_t i = 0; i < bullets.size(); i++) {
-      for (size_t j = 0; j < mobs.size(); j++) {
-        if ((bullets[i].x > mobs[j].x - 0.1) &&
-            (bullets[i].x < mobs[j].x + 0.1) &&
-            (bullets[i].y > mobs[j].y - 0.1) &&
-            (bullets[i].y < mobs[j].y + 0.1)) {
-          // Collision with enemy
-          mobs[j].health -= 1;
-          bullets.erase(bullets.begin() + i);
-        }
+    // for (size_t i = 0; i < bullets.size(); i++) {
+    //   for (size_t j = 0; j < mobs.size(); j++) {
+    //     if ((bullets[i].x > mobs[j].x - 0.1) &&
+    //         (bullets[i].x < mobs[j].x + 0.1) &&
+    //         (bullets[i].y > mobs[j].y - 0.1) &&
+    //         (bullets[i].y < mobs[j].y + 0.1)) {
+    //       // Collision with enemy
+    //       mobs[j].health -= 1;
+    //       bullets.erase(bullets.begin() + i);
+    //     }
+    //   }
+    //   bullets[i].draw();
+    // }
+
+    for (Bullet& bullet : bullets) {
+      bullet.draw();
+    }
+
+    for (Mob& mob : mobs) {
+      mob.draw();
+
+      for (Bullet& bullet : mob.bullets) {
+        bullet.draw();
       }
-      bullets[i].draw();
     }
 
     // Draw the mobs
-    for (Mob &mob : mobs) {
-      mob.update(bullets); // Update the mobs object
-      if (mob.health > 0) {
-        mob.draw();
-      }
-    }
+    // for (Mob &mob : mobs) {
+    // //   mob.update(bullets); // Update the mobs object
+    // //   if (mob.health > 0) {
+    //   mob.draw();
+    // //   }
+    // }
 
     // Erase bullets marked for removal
-    auto it = bullets.begin();
-    while (it != bullets.end()) {
-      if (it->needsRemoval) {
-        it = bullets.erase(it);
-      } else {
-        ++it;
-      }
-    }
+    // auto it = bullets.begin();
+    // while (it != bullets.end()) {
+    //   if (it->needsRemoval) {
+    //     it = bullets.erase(it);
+    //   } else {
+    //     ++it;
+    //   }
+    // }
 
     //handleBulletMobsCollision();
   }

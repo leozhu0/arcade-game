@@ -2,12 +2,12 @@
 #include <GL/glut.h>
 #include <cmath>
 
-Bullet::Bullet(float i_x, float i_y, float rad, float dir, bool playerBullet)
-    : x(i_x), y(i_y), radius(rad), direction(dir), needsRemoval(false), belongsToPlayer(playerBullet) {}
+Bullet::Bullet(float i_x, float i_y, float rad, float dir, float i_speed, bool playerBullet)
+    : x(i_x), y(i_y), radius(rad), direction(dir), speed(i_speed), needsRemoval(false), belongsToPlayer(playerBullet) {}
 
 void Bullet::update() {
-    x += 0.005 * cosf(direction);
-    y += 0.005 * sinf(direction);
+    x += speed * cosf(direction);
+    y += speed * sinf(direction);
 
     if (std::abs(x) > 1.0 || std::abs(y) > 1.0) {
         needsRemoval = true; // Set the flag to true when the bullet is out of bounds
