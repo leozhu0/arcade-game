@@ -1,8 +1,11 @@
 #include "mobs.h"
 #include "bullet.h"
+#include "texture.h"
 #include <GL/glut.h>
 #include <iostream>
 #include <cmath>
+#include <vector>
+Texture textureMob;
 
 Mob::Mob(float i_x, float i_y, float x_dir, float y_dir) {
     // Initialize mob positions
@@ -59,11 +62,6 @@ void Mob::update() {
 
 void Mob::draw() {
     if (isAlive()) {
-        glColor3f(1.0, 0.0, 0.0); // Red color for mob1
-        glBegin(GL_TRIANGLE_FAN);
-        glVertex2f(x, y + 0.1);
-        glVertex2f(x - 0.1, y - 0.1);
-        glVertex2f(x + 0.1, y - 0.1);
-        glEnd();
+        textureMob.drawMob(x, y);
     }
 }

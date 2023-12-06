@@ -4,10 +4,7 @@
 
 Texture texture;
 
-Player::Player(float initialX, float initialY) : x(initialX), y(initialY), reload(0), health(3) {
-    //texture.loadPlayerTexture("lib/images/testCannon.png");
-    //score = 0;
-}
+Player::Player(float initialX, float initialY) : x(initialX), y(initialY), reload(0), health(3) {}
 
 void Player::update() {
   if (reload != 0)
@@ -17,10 +14,6 @@ void Player::update() {
 void Player::draw() const {
   texture.drawPlayer(x, y);
 }
-
-// void Player::increaseScore(int points) {
-//     score += points;
-// }
 
 void Player::handleMouseMotion(int newX, int newY) {
   // Update player position based on mouse coordinates
