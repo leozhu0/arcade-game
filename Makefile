@@ -1,10 +1,11 @@
-CXXFLAGS = g++ -std=c++11 -DGL_SILENCE_DEPRECATION src/main.cpp src/lib/player.cpp src/lib/mobs.cpp src/lib/bullet.cpp src/lib/texture.cpp -I/opt/homebrew/include -L/opt/homebrew/lib -lGL -lglut
+CXXFLAGS = -std=c++11 -DGL_SILENCE_DEPRECATION
+LDFLAGS = -I/opt/homebrew/include -L/opt/homebrew/lib -lGL -lglut
 
-make: 
-	$(CXXFLAGS) -o main
+main: src/main.cpp src/lib/player.cpp src/lib/mobs.cpp src/lib/bullet.cpp src/lib/texture.cpp
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-run: ./main
+run: main
 	DISPLAY=:0 ./main
 
 clean:
-	rm main
+	rm -f main
