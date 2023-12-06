@@ -83,6 +83,7 @@ void init() {
   glMatrixMode(GL_MODELVIEW);
 
   glClearColor(0.0, 0.0, 0.0, 0.0); // Set background color to black
+  textureLoader.loadPlayerTexture("lib/images/testCannon.png");
 }
 
 // Updates the position and values of objects then redraws
