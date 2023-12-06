@@ -2,6 +2,7 @@
 #include "bullet.h"
 #include <GL/glut.h>
 #include <iostream>
+#include <cmath>
 
 Mob::Mob(float i_x, float i_y, float x_dir, float y_dir) {
     // Initialize mob positions
@@ -12,8 +13,6 @@ Mob::Mob(float i_x, float i_y, float x_dir, float y_dir) {
 
     x_direction = x_dir;
     y_direction = y_dir;
-
-    shootCooldown = 100;
 }
 
 bool Mob::isAlive() const {
@@ -30,7 +29,7 @@ void Mob::handleBoundaryBounce(float &position, int &direction, float speed) {
     }
 }
 
-void Mob::update(std::vector<Bullet>& bullets) {
+void Mob::update() {
     // Add logic to make mobs move automatically
     x += speed * x_direction;
     y += speed * y_direction;
@@ -38,6 +37,12 @@ void Mob::update(std::vector<Bullet>& bullets) {
     // Add logic to handle mob boundaries or reset positions if needed
     handleBoundaryBounce(x, x_direction, speed);
     handleBoundaryBounce(y, y_direction, speed);
+
+    if (reload != 0) --reload;
+    else if (isAlive()) {
+        bullets.push_back(Bullet(x, y, 0.05, -1.5707964, 0.0005, false));
+        reload = 5000;
+    }
 
     // Shooting logic
     // FIXME THEY KILL THEMSELVES CURRENTLY, also segfaults?
