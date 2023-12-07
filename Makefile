@@ -5,7 +5,7 @@ main: src/main.cpp src/lib/player.cpp src/lib/mobs.cpp src/lib/bullet.cpp src/li
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 run: main
-	DISPLAY=:0 ./main
+	./main
 
 clean:
 	rm -f main

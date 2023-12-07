@@ -3,20 +3,28 @@ README.md
 # Bullet Hell
 by Leo Zhu, John Lins, Jennifer Lopez, and Kevin Lee
 
-For our arcade game, we have created a bullet hell style game. While everything is not implemented yet, the idea of the game is to have the player clear waves of enemies in order to complete a level. 
-Further along in the project, enemies will be able to be destroyed once they are hit by enough projectiles. Enemies will also be able to fire projectiles at the player which can cause the player to lose a life. After a wave of enemies is defeated, the next wave will come in. The game will continue until all the enemies have been defeated or the player loses all their lives.
+For our arcade game, we have created a bullet hell style game. The of the game is to have the player clear all the mobs in order to win. Enemies are destroyed after 20 hits by the player. Enemies also fire projectiles at the player which kills the player. The player dies after one hit by a mob. The projectiles of enemies are spawned randomly in waves and the player should avoid them while trying to kill the enemies. 
 
+# Scoring
+Game Over: 
+- Player is killed by a projectile. The player earns no score because they didn't finis the game
+- Player fails to kill all the enemies within the alloted time.
+
+Game Win:
+- Player kills all the enemies within 2 minutes.
+- The faster they kill all the enemies, the higher the score.
+- The slower they kill all the enemies, the lower the score
 
 ## How to Play
 
-Once the window loads, the player's position is controlled by the mouse. The player’s character can fire projectiles at the enemies by using the `spacebar`. The enemies will begin to move around the screen in an attempt to dodge the projectiles.
+Once the window loads, follow the instructions to start the game. The player's position is controlled by the mouse. The player’s character can fire projectiles at the enemies by using the `spacebar`. The enemies will begin to move around the screen and fire projectiles at the player.
 
 
 ## How to Compile Using The Makefile
 
 To build the game:
 - Open your terminal use `make`
-- Then use `make run`
+- Then use `./main`
 - To clean up built files, use `make clean`.
 
 ## Exiting The Game
