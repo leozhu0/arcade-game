@@ -24,14 +24,14 @@ int prevMouseX = windowWidth / 2;
 int prevMouseY = windowHeight / 2;
 Texture textureLoader;
 
-Player player(0.0f, -0.5f); // Instantiate a player object at the initial position
-std::vector<Mob> mobs;      // Instantiate Mobs
-std::vector<Mob> mobBuffer;
-Mob mob1(-0.9, 0.9, 1, -1);   // Left corner
-Mob mob2(0.9, 0.9, -1, -1);   // Right corner
-Mob mob3(0.0, 0.0, 0, 1);     // Middle
-Mob mob4(-0.45, 0.45, 1, 1);  // Between mob1 and mob3
-Mob mob5(0.45, 0.45, -1, 1);  // Between mob2 and mob3
+Player player(0.0f, -0.5f);  // Instantiate a player object at the initial position
+std::vector<Mob> mobs;       // Instantiate Mobs
+std::vector<Mob> mobBuffer;  // Used to store mobs that are still alive
+Mob mob1(-0.9, 0.9, 1, -1);  // Left corner
+Mob mob2(0.9, 0.9, -1, -1);  // Right corner
+Mob mob3(0.0, 0.0, 0, 1);    // Middle
+Mob mob4(-0.45, 0.45, 1, 1); // Between mob1 and mob3
+Mob mob5(0.45, 0.45, -1, 1); // Between mob2 and mob3
 
 // Predeclares vector of bullets to be used later
 std::vector<Bullet> bullets;
@@ -111,19 +111,14 @@ void startDisplay() {
 
   drawStar(0.8, 0.5, 10.0);
   drawStar(-0.8, -0.2, 10.0);
-
-  // glutSwapBuffers;
 }
 
 // Calculating and displaying score
 void drawScore() {
-
   score = 120000 - (currentTime);
-
   if (score == 0) {
     gameState = GAME_OVER;
   }
-
 }
 
 void endDisplay() {
@@ -193,7 +188,7 @@ void init() {
   glMatrixMode(GL_MODELVIEW);
 
   glClearColor(0.0, 0.0, 0.0, 0.0); // Set background color to black
-  textureLoader.loadPlayerTexture("src/lib/images/testCannon.png");
+  textureLoader.loadPlayerTexture("src/lib/images/player.png");
   textureLoader.loadMobTexture("src/lib/images/mobs.png");
 }
 
@@ -238,7 +233,7 @@ void update(int value) {
   for (Mob &mob : mobs) {
     mob.update();
 
-    // Same bullet logic for the bullets of the mobs 
+    // Same bullet logic for the bullets of the mobs
     for (Bullet &bullet : mob.bullets) {
       bullet.update();
 
@@ -322,7 +317,7 @@ void display() {
     winDisplay();
   }
 
-    glutSwapBuffers(); // Use double buffering
+  glutSwapBuffers(); // Use double buffering
 }
 
 void timer(int value) {
@@ -347,7 +342,8 @@ void handleMouseMotion(int newX, int newY) {
 }
 
 int main(int argc, char **argv) {
-  mobs.push_back(mob1);
+  // Initialize mobs
+  mobs.push_back(mob1); 
   mobs.push_back(mob2);
   mobs.push_back(mob3);
   mobs.push_back(mob4);

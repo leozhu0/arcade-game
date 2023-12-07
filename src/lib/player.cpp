@@ -3,7 +3,6 @@
 #include <GL/glut.h>
 
 Texture texture;
-
 Player::Player(float initialX, float initialY) : x(initialX), y(initialY), reload(0), health(3) {}
 
 // Sets a delay for the player firing a bullet

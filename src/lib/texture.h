@@ -5,9 +5,10 @@
 
 struct Texture {
   GLuint loadTexture(const char *filename);
+
   void loadBackgroundTexture(const char *filename);
   void drawBackground(bool isStartScreen);
-  
+
   void loadPlayerTexture(const char *filename);
   void drawPlayer(float x, float y);
 
