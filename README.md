@@ -3,7 +3,7 @@ README.md
 # Bullet Hell
 by Leo Zhu, John Lins, Jennifer Lopez, and Kevin Lee
 
-For our arcade game, we have created a bullet hell style game. The of the game is to have the player clear all the mobs in order to win. Enemies are destroyed after 20 hits by the player. Enemies also fire projectiles at the player which kills the player. The player dies after one hit by a mob. The projectiles of enemies are spawned randomly in waves and the player should avoid them while trying to kill the enemies. 
+For our arcade game, we have created a bullet hell style game. The point of the game is to have the player clear all the mobs in order to win. Enemies are destroyed after 20 hits by the player. Enemies also fire projectiles at the player which kills the player. The player dies after one hit by a mob. The projectiles of enemies are spawned randomly in waves and the player should avoid them while trying to kill the enemies. 
 
 # Scoring
 Game Over: Player is killed by a projectile. The player earns no score because they didn't finis the game
