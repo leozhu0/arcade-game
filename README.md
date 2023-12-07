@@ -9,6 +9,7 @@ For our arcade game, we have created a bullet hell style game. The of the game i
 Game Over: 
 - Player is killed by a projectile. The player earns no score because they didn't finis the game
 - Player fails to kill all the enemies within the alloted time.
+
 Game Win:
 - Player kills all the enemies within 2 minutes.
 - The faster they kill all the enemies, the higher the score.
