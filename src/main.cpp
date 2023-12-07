@@ -27,11 +27,11 @@ Texture textureLoader;
 Player player(0.0f, -0.5f); // Instantiate a player object at the initial position
 std::vector<Mob> mobs;      // Instantiate Mobs
 std::vector<Mob> mobBuffer;
-Mob mob1(-0.9, 0.9, 1, -1);  // Left corner
-Mob mob2(0.9, 0.9, -1, -1);    // Right corner
-Mob mob3(0.0, 0.0, 0, 1); // Middle
-Mob mob4(-0.45, 0.45, 1, 1);  
-Mob mob5(0.45, 0.45, -1, 1);   
+Mob mob1(-0.9, 0.9, 1, -1);   // Left corner
+Mob mob2(0.9, 0.9, -1, -1);   // Right corner
+Mob mob3(0.0, 0.0, 0, 1);     // Middle
+Mob mob4(-0.45, 0.45, 1, 1);  // Between mob1 and mob3
+Mob mob5(0.45, 0.45, -1, 1);  // Between mob2 and mob3
 
 // Predeclares vector of bullets to be used later
 std::vector<Bullet> bullets;
@@ -115,6 +115,7 @@ void startDisplay() {
   // glutSwapBuffers;
 }
 
+// Calculating and displaying score
 void drawScore() {
 
   score = 120000 - (currentTime);
@@ -123,25 +124,6 @@ void drawScore() {
     gameState = GAME_OVER;
   }
 
-  // std::string scoreText = "Score: " + std::to_string(score); // fix to update score
-
-  // // Calculate the width of the text string
-  // int stringWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18, (unsigned char *)scoreText.c_str());
-
-  // // Calculate the starting position to place the text in the top-right corner
-  // float x = 1.1 - (static_cast<float>(stringWidth) / glutGet(GLUT_WINDOW_WIDTH));
-  // float y = 0.9;
-
-  // // Adjust the font size
-  // glPointSize(30.0f);
-
-  // glColor3f(1.0, 1.0, 1.0); // White color for text
-  // glRasterPos2f(x, y);
-
-  // // Draw each character in the score text
-  // for (char character : scoreText) {
-  //   glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, character);
-  // }
 }
 
 void endDisplay() {
@@ -220,6 +202,7 @@ void update(int value) {
   glutKeyboardFunc(handleKeypress);
   glutKeyboardUpFunc(handleKeyRelease);
 
+  // spawning player's bullets
   if (gameState == PLAYING && isSpacePressed && player.reload == 0) {
     bullets.push_back(Bullet(player.x, player.y, 0.01, 1.5707964, 0.015, true));
     player.reload = 10;
@@ -228,6 +211,8 @@ void update(int value) {
   player.update();
 
   for (Bullet &bullet : bullets) {
+
+    // Checking if a bulelt has hit a mob
     for (Mob &mob : mobs) {
       if ((bullet.x > mob.x - 0.1) &&
           (bullet.x < mob.x + 0.1) &&
@@ -239,21 +224,25 @@ void update(int value) {
       }
     }
 
+    // Removes a bullet that is out of bounds or hit a mob
     bullet.update();
     if (!bullet.needsRemoval) {
       bulletBuffer.push_back(bullet);
     }
   }
 
+  // Additional bullet logic to improve runtime
   bullets = bulletBuffer;
   bulletBuffer.clear();
 
   for (Mob &mob : mobs) {
     mob.update();
 
+    // Same bullet logic for the bullets of the mobs 
     for (Bullet &bullet : mob.bullets) {
       bullet.update();
 
+      // Checking if the player has been hit by a mobs' bullet
       float distance = sqrtf(powf(player.x - bullet.x, 2) + powf(player.y - bullet.y, 2));
 
       if (distance <= bullet.radius) {
@@ -269,6 +258,7 @@ void update(int value) {
     mob.bullets = mob.bulletBuffer;
     mob.bulletBuffer.clear();
 
+    // Only keeps around the mobs that are still alive
     if (mob.health > 0) {
       mobBuffer.push_back(mob);
     }
@@ -278,7 +268,7 @@ void update(int value) {
   mobBuffer.clear();
 
   if (mobs.empty()) {
-    // Do something when there are no more mobs (e.g., transition to GAME_OVER state)
+    // Transition to GAME_OVER state
     gameState = GAME_WON;
   }
 
@@ -296,21 +286,26 @@ void display() {
   textureLoader.drawBackground(gameState == START_SCREEN);
 
   if (gameState == START_SCREEN) {
+
     // Draw start screen content
     glColor3f(1.0, 1.0, 1.0); // White color for text
     // drawStartMessage("Press SPACE to start the game", GLUT_BITMAP_HELVETICA_18, 30.0f, 0.0);
     startDisplay();
     // Add any other start screen content here
+
   } else if (gameState == PLAYING) {
+
     // Draw the player
     player.draw();
     glColor3f(1.0, 1.0, 1.0); // White color for text
     drawScore();
 
+    // Drawing the bullets
     for (Bullet &bullet : bullets) {
       bullet.draw();
     }
 
+    // Drawing the mobs and their respective bullets
     for (Mob &mob : mobs) {
       mob.draw();
 
@@ -318,6 +313,8 @@ void display() {
         bullet.draw();
       }
     }
+
+    // Below are checks for the game state
   } else if (gameState == GAME_OVER) {
     score = 0;
     endDisplay();

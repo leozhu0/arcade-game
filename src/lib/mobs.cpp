@@ -46,21 +46,25 @@ void Mob::update() {
 
     if (reload != 0) --reload;
     else if (isAlive()) {
+        // easy mode
         bullets.push_back(Bullet(x, y, 0.04, -1.5707964, 0.005, false));
         bullets.push_back(Bullet(x, y, 0.04, 1.5707964, 0.005, false));
         bullets.push_back(Bullet(x, y, 0.04, 0, 0.005, false));
         bullets.push_back(Bullet(x, y, 0.04, 3.141592, 0.005, false));
+
+        // hard mode, uncomment if you would like
+        // bullets.push_back(Bullet(x, y, 0.01, -1.5707964, 0.01, false));
+        // bullets.push_back(Bullet(x, y, 0.01, 1.5707964, 0.01, false));
+        // bullets.push_back(Bullet(x, y, 0.01, 0, 0.005, false));
+        // bullets.push_back(Bullet(x, y, 0.01, 3.141592, 0.01, false));
+
+        // bullets.push_back(Bullet(x, y, 0.01, 0.785398, 0.01, false));
+        // bullets.push_back(Bullet(x, y, 0.01, 2.356194, 0.01, false));
+        // bullets.push_back(Bullet(x, y, 0.01, -0.785398, 0.01, false));
+        // bullets.push_back(Bullet(x, y, 0.01, -2.356194, 0.01, false));
         reload = 50;
     }
 
-    // Shooting logic
-    // FIXME THEY KILL THEMSELVES CURRENTLY, also segfaults?
-    // if (isAlive() && shootCooldown == 0) {
-    //     bullets.push_back(Bullet(x, y, 0.01, 3.0 * M_PI / 2.0, false)); // Create a new bullet with a downward direction
-    //     shootCooldown = 100; // Reset cooldown
-    // } else {
-    //     shootCooldown--;
-    // }
 }
 
 void Mob::draw() {
