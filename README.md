@@ -7,6 +7,7 @@ For our arcade game, we have created a bullet hell style game. The goal of the g
 
 # Scoring
 The player's score is displayed once the game ends.
+
 Game Over: 
 - Player is killed by a projectile. The player earns no score because they the game was not finished
 - Player fails to kill all the enemies within the alloted time.
